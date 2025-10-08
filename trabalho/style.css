@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+.logo {
+  margin: 3rem;
+}
+
+.logo img {
+  width: 8rem;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-left: 3rem;
+  font-family: "Open Sans", sans-serif;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #000;
+  font-size: 16px;
+}
+
+.icon {
+  background-color: #52b69a;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 0.7rem;
+  color: #fff;
+  margin-right: 0.7rem;
+}
+
+.ajuda img {
+  display: flex;
+  margin: 19rem 0 0 1.5rem;
+}
+
+.texto {
+  position: absolute;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  margin: 4.7rem 0 0 2.4rem;
+}
+
+.ajuda h3,
+p,
+a {
+  background: none;
+  color: #fff;
+  font-family: "Open Sans", sans-serif;
+}
+
+.ajuda h3 {
+  font-size: 14px;
+}
+
+.ajuda p {
+  font-size: 12px;
+}
+
+.ajuda a {
+  font-size: 12px;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+  padding: 10px 45px;
+  font-family: "Open Sans", sans-serif;
+  border-radius: 0.7rem;
+  margin-top: 10px;
+}
