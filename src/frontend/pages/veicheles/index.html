@@ -1,709 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="./styles/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-</head>
-<body>
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
+  <body>
     <nav>
-        <div class="logo">
-            <img src="assets/Logo.svg">
-        </div>
-        <div class="navbar">
-            <a href=""><i class="icon fa-solid fa-house"></i>Início</a>
-            <a href=""><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
-            <a href=""><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
-            <a href=""><i class="icon fa-solid fa-car"></i> Veículos</a>
-            <a href=""><i class="icon fa-solid fa-user"></i>Pessoas</a>
-        </div>
+      <div class="logo">
+        <img src="assets/Logo.svg" />
+      </div>
+      <div class="navbar">
+        <a href=""><i class="icon fa-solid fa-house"></i>Início</a>
+        <a href=""><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
+        <a href=""><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
+        <a href=""><i class="icon fa-solid fa-car"></i> Veículos</a>
+        <a href=""><i class="icon fa-solid fa-user"></i>Pessoas</a>
+      </div>
     </nav>
 
     <main>
-        <header>
-            <h1>Veículos</h1>
-            <div class="header-buttons">
-                <button class="btn">
-                    <img src="assets/refresh-icon.svg" alt="Atualizar" class="icon-svg">
-                    Atualizar
-                </button>
-                <button class="btn">
-                    <img src="assets/document-icon.svg" alt="Documento" class="icon-svg">
-                    Exportar
-                </button>
+      <header>
+        <h1>Página Inicial</h1>
+        <div class="header-buttons">
+          <button class="btn">
+            <img
+              src="assets/refresh-icon.svg"
+              alt="Atualizar"
+              class="icon-svg"
+            />
+            Atualizar
+          </button>
+          <button class="btn">
+            <img
+              src="assets/document-icon.svg"
+              alt="Documento"
+              class="icon-svg"
+            />
+            Exportar
+          </button>
 
-                <div class="account-header">
-                    <div>
-                        <i class="fa-solid fa-user"></i>
-                        <span>Conta</span>
-                    </div>
-                    <i class="fa-solid fa-gear"></i>
-                    <i class="fa-solid fa-bell"></i>
-                </div>
+          <div class="account-header">
+            <div>
+              <i class="fa-solid fa-user"></i>
+              <span>Conta</span>
             </div>
-        </header>
-        <section class="content">
-            <div class="filter-container">
-                <div class="input-container">
-                    <label for="modelo">Modelo</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="modelo" placeholder="Fiat Mobi" maxlength="8">
-                        <img src="./assets/car-icon.svg" alt="Icone Carro" class="icon-svg">
-                    </div>
-                </div>
-
-                <div class="input-container">
-                    <label for="placa">Placa</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="placa" placeholder="AB4C-4D5H" maxlength="8">
-                        <img src="./assets/placa-icon.svg" alt="Icone Placa" class="icon-svg">
-                    </div>
-                </div>
-
-                <div class="input-container">
-                    <label for="motorista">Motorista</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="motorista" placeholder="Wallace Jr." maxlength="8">
-                        <img src="./assets/people.svg" alt="Icone Pessoa" class="icon-svg">
-                    </div>
-                </div>
-
-                <!-- NOVO SELECT DE ORDENAÇÃO -->
-                <div class="input-container">
-                    <label for="ordenar">Ordenar por</label>
-                    <div class="input-wrapper">
-                        <select id="ordenar">
-                            <option value="modelo">Modelo</option>
-                            <option value="placa">Placa</option>
-                            <option value="motorista">Motorista</option>
-                            <option value="data">Data</option>
-                        </select>
-                        <img src="./assets/view-more-icon.svg" alt="Ícone Ver Mais" class="view-more">
-                    </div>
-                </div>
-                
-                <div class="buttons-container">
-                    <button class="btn sort" id="ordenar-btn">
-                        <img src="./assets/sort-icon.svg" alt="Ícone Ordenar" class="icon-svg">
-                    </button>
-                    <button class="btn add" id="cadastrar-btn">
-                        <img src="./assets/add-icon.svg" alt="Ícone Cadastrar" class="icon-svg">
-                        Cadastrar
-                    </button>
-                </div>
+            <i class="fa-solid fa-gear"></i>
+            <i class="fa-solid fa-bell"></i>
+          </div>
+        </div>
+      </header>
+      <section class="content">
+        <div class="filter-container">
+          <div class="input-container">
+            <div class="input-wrapper">
+              <p>Total de Gastos</p>
             </div>
-            <div class="cards-container">
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
+            <h1>R$ 100.000,00</h1>
+          </div>
 
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://s3-sa-east-1.amazonaws.com/revista.mobiauto/Carros+de+trabalho/Fiat+Fiorino.jpg" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://s3-sa-east-1.amazonaws.com/revista.mobiauto/Carros+de+trabalho/Fiat+Fiorino.jpg" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://s3-sa-east-1.amazonaws.com/revista.mobiauto/Carros+de+trabalho/Fiat+Fiorino.jpg" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://s3-sa-east-1.amazonaws.com/revista.mobiauto/Carros+de+trabalho/Fiat+Fiorino.jpg" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="vehicle-card">
-                    <div class="image-container">
-                        <img src="https://plus.unsplash.com/premium_photo-1664695368767-c42483a0bda1?q=80&w=872&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Veículo" class="vehicle-image">
-                        <button class="config-button">
-                            <img src="./assets/settings-icon.svg" alt="Ícone Configuração" class="config-icon">
-                        </button>
-                        <div class="plate-badge">ABC-1234</div>
-                    </div>
-                    
-                    <div class="card-content">
-                        <div class="info-section">
-                            <h3 class="driver-name">João Silva</h3>
-                            
-                            <div class="cnh-info">
-                                <div class="cnh-icon">ID</div>
-                                <span>CNH: 12345678901</span>
-                            </div>
-                            
-                            <div class="status-container">
-                                <div class="status-badge active">
-                                    <span class="status-dot"></span>
-                                    <span>Ativo</span>
-                                </div>
-                            </div>  
-                        </div>
-
-                        <div class="monthly-cost">
-                            <div class="cost-item">
-                                <span class="cost-label">Gasto/m</span>
-                                <span class="cost-value">R$ 1.450</span>
-                            </div>
-                            <div class="cost-item">
-                                <span class="cost-label">Em atividade</span>
-                                <span class="time-value">2 anos 4 meses</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div class="input-container">
+            <div class="input-wrapper">
+              <p>Gasto Combustivel</p>
             </div>
+            <h1>R$ 54.352,00</h1>
+          </div>
+
+          <div class="input-container">
+            <div class="input-wrapper">
+              <p>Gasto Manutenção</p>
+            </div>
+            <h1>R$ 46.523,00</h1>
+          </div>
+
+          <div class="input-container">
+            <div class="input-wrapper">
+              <p>Total de Veículos</p>
+            </div>
+            <h1>53</h1>
+          </div>
+        </div>
+        <div class="infos">
+          <div class="info">
+            <h1>a</h1>
+          </div>
+          <div class="info">
+            <h1>a</h1>
+          </div>
+          <div class="info">
+            <h1>a</h1>
+          </div>
+        </div>
+      </section>
     </main>
-</body>
+  </body>
 </html>
