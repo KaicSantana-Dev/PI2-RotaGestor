@@ -20,12 +20,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.17.1
- * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
+ * Prisma Client JS version: 6.18.0
+ * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
  */
 Prisma.prismaVersion = {
-  client: "6.17.1",
-  engine: "272a37d34178c2894197e17273bf937f25acdeac"
+  client: "6.18.0",
+  engine: "34b5a692b7bd79939a9a2c3ef97d816e749cda2f"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -120,12 +120,47 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.VeiculosScalarFieldEnum = {
+exports.Prisma.UsuarioScalarFieldEnum = {
+  id: 'id',
+  Nome: 'Nome',
+  Senha: 'Senha',
+  Email: 'Email'
+};
+
+exports.Prisma.CarroScalarFieldEnum = {
   id: 'id',
   Modelo: 'Modelo',
-  Marca: 'Marca',
   Placa: 'Placa',
-  Ano_: 'Ano_'
+  Ano: 'Ano',
+  Marca: 'Marca',
+  URL_Imagem: 'URL_Imagem',
+  motoristaId: 'motoristaId'
+};
+
+exports.Prisma.GastosCombustivelScalarFieldEnum = {
+  id: 'id',
+  carroId: 'carroId',
+  Valor: 'Valor',
+  Gasto: 'Gasto',
+  Data: 'Data',
+  Posto: 'Posto'
+};
+
+exports.Prisma.GastosManutencaoScalarFieldEnum = {
+  id: 'id',
+  carroId: 'carroId',
+  Valor: 'Valor',
+  Gasto: 'Gasto',
+  Data: 'Data',
+  Local: 'Local'
+};
+
+exports.Prisma.FuncionarioScalarFieldEnum = {
+  id: 'id',
+  Nome: 'Nome',
+  CPF: 'CPF',
+  Email: 'Email',
+  Cargo: 'Cargo'
 };
 
 exports.Prisma.SortOrder = {
@@ -137,15 +172,23 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
+exports.TipodeGasto = exports.$Enums.TipodeGasto = {
+  Combustivel: 'Combustivel',
+  Manutencao: 'Manutencao'
 };
 
+exports.Cargo = exports.$Enums.Cargo = {
+  Gerente: 'Gerente',
+  Motorista: 'Motorista',
+  Administrador: 'Administrador'
+};
 
 exports.Prisma.ModelName = {
-  Veiculos: 'Veiculos'
+  Usuario: 'Usuario',
+  Carro: 'Carro',
+  GastosCombustivel: 'GastosCombustivel',
+  GastosManutencao: 'GastosManutencao',
+  Funcionario: 'Funcionario'
 };
 
 /**

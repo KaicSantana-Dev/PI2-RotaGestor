@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.17.1
- * Query Engine version: 272a37d34178c2894197e17273bf937f25acdeac
+ * Prisma Client JS version: 6.18.0
+ * Query Engine version: 34b5a692b7bd79939a9a2c3ef97d816e749cda2f
  */
 Prisma.prismaVersion = {
-  client: "6.17.1",
-  engine: "272a37d34178c2894197e17273bf937f25acdeac"
+  client: "6.18.0",
+  engine: "34b5a692b7bd79939a9a2c3ef97d816e749cda2f"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -92,12 +92,47 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.VeiculosScalarFieldEnum = {
+exports.Prisma.UsuarioScalarFieldEnum = {
+  id: 'id',
+  Nome: 'Nome',
+  Senha: 'Senha',
+  Email: 'Email'
+};
+
+exports.Prisma.CarroScalarFieldEnum = {
   id: 'id',
   Modelo: 'Modelo',
-  Marca: 'Marca',
   Placa: 'Placa',
-  Ano_: 'Ano_'
+  Ano: 'Ano',
+  Marca: 'Marca',
+  URL_Imagem: 'URL_Imagem',
+  motoristaId: 'motoristaId'
+};
+
+exports.Prisma.GastosCombustivelScalarFieldEnum = {
+  id: 'id',
+  carroId: 'carroId',
+  Valor: 'Valor',
+  Gasto: 'Gasto',
+  Data: 'Data',
+  Posto: 'Posto'
+};
+
+exports.Prisma.GastosManutencaoScalarFieldEnum = {
+  id: 'id',
+  carroId: 'carroId',
+  Valor: 'Valor',
+  Gasto: 'Gasto',
+  Data: 'Data',
+  Local: 'Local'
+};
+
+exports.Prisma.FuncionarioScalarFieldEnum = {
+  id: 'id',
+  Nome: 'Nome',
+  CPF: 'CPF',
+  Email: 'Email',
+  Cargo: 'Cargo'
 };
 
 exports.Prisma.SortOrder = {
@@ -109,15 +144,23 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
+exports.TipodeGasto = exports.$Enums.TipodeGasto = {
+  Combustivel: 'Combustivel',
+  Manutencao: 'Manutencao'
 };
 
+exports.Cargo = exports.$Enums.Cargo = {
+  Gerente: 'Gerente',
+  Motorista: 'Motorista',
+  Administrador: 'Administrador'
+};
 
 exports.Prisma.ModelName = {
-  Veiculos: 'Veiculos'
+  Usuario: 'Usuario',
+  Carro: 'Carro',
+  GastosCombustivel: 'GastosCombustivel',
+  GastosManutencao: 'GastosManutencao',
+  Funcionario: 'Funcionario'
 };
 /**
  * Create the Client
@@ -156,8 +199,8 @@ const config = {
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
-  "clientVersion": "6.17.1",
-  "engineVersion": "272a37d34178c2894197e17273bf937f25acdeac",
+  "clientVersion": "6.18.0",
+  "engineVersion": "34b5a692b7bd79939a9a2c3ef97d816e749cda2f",
   "datasourceNames": [
     "db"
   ],
@@ -170,13 +213,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"windows\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Veiculos {\n  id     String  @id @default(uuid())\n  Modelo String\n  Marca  String\n  Placa  String\n  Ano_   String? @map(\"Ano \")\n}\n",
-  "inlineSchemaHash": "dcaf48303b2e1c01ae88bc79013b7325fb34258b7cb203bb3a6e76f0ca126fa4",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"windows\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Usuario {\n  id    Int    @id @default(autoincrement())\n  Nome  String\n  Senha String\n  Email String\n}\n\nenum TipodeGasto {\n  Combustivel\n  Manutencao\n}\n\nmodel Carro {\n  id                Int                 @id @default(autoincrement())\n  Modelo            String\n  Placa             String\n  Ano               Int\n  Marca             String\n  URL_Imagem        String\n  motoristaId       Int                 @unique\n  Motorista         Funcionario         @relation(fields: [motoristaId], references: [id])\n  GastosCombustivel GastosCombustivel[]\n  GastosManutencao  GastosManutencao[]\n}\n\nmodel GastosCombustivel {\n  id      Int         @id @default(autoincrement())\n  carroId Int\n  Carro   Carro       @relation(fields: [carroId], references: [id])\n  Valor   Decimal\n  Gasto   TipodeGasto\n  Data    DateTime\n  Posto   String\n}\n\nmodel GastosManutencao {\n  id      Int         @id @default(autoincrement())\n  carroId Int\n  Carro   Carro       @relation(fields: [carroId], references: [id])\n  Valor   Decimal\n  Gasto   TipodeGasto\n  Data    DateTime\n  Local   String\n}\n\nenum Cargo {\n  Gerente\n  Motorista\n  Administrador\n}\n\nmodel Funcionario {\n  id    Int    @id @default(autoincrement())\n  Nome  String\n  CPF   String\n  Email String\n  Cargo Cargo\n  Carro Carro?\n}\n",
+  "inlineSchemaHash": "75605a68728d9b3cdbdcdd9a9dd6b99e6d6e03698e276b8c082f47644f67e721",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Veiculos\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Modelo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Marca\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Placa\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Ano_\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"Ano \"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Usuario\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Senha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Email\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Carro\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Modelo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Placa\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Ano\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Marca\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"URL_Imagem\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"motoristaId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Motorista\",\"kind\":\"object\",\"type\":\"Funcionario\",\"relationName\":\"CarroToFuncionario\"},{\"name\":\"GastosCombustivel\",\"kind\":\"object\",\"type\":\"GastosCombustivel\",\"relationName\":\"CarroToGastosCombustivel\"},{\"name\":\"GastosManutencao\",\"kind\":\"object\",\"type\":\"GastosManutencao\",\"relationName\":\"CarroToGastosManutencao\"}],\"dbName\":null},\"GastosCombustivel\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"carroId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Carro\",\"kind\":\"object\",\"type\":\"Carro\",\"relationName\":\"CarroToGastosCombustivel\"},{\"name\":\"Valor\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"Gasto\",\"kind\":\"enum\",\"type\":\"TipodeGasto\"},{\"name\":\"Data\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Posto\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"GastosManutencao\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"carroId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Carro\",\"kind\":\"object\",\"type\":\"Carro\",\"relationName\":\"CarroToGastosManutencao\"},{\"name\":\"Valor\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"Gasto\",\"kind\":\"enum\",\"type\":\"TipodeGasto\"},{\"name\":\"Data\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"Local\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Funcionario\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"Nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"CPF\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"Cargo\",\"kind\":\"enum\",\"type\":\"Cargo\"},{\"name\":\"Carro\",\"kind\":\"object\",\"type\":\"Carro\",\"relationName\":\"CarroToFuncionario\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
