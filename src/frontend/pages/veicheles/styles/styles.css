@@ -90,7 +90,6 @@ header {
   display: flex;
   align-items: end;
   justify-content: space-between;
-  height: 10vh;
   margin-top: 3vh;
   margin-bottom: clamp(40px, 6vh, 80px);
 }
@@ -167,24 +166,24 @@ header h1:hover {
   transform: rotate(15deg);
 }
 
-.filter-container {
+.info-grafico {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 25px;
 }
 
-.input-container {
+.info-div {
   display: flex;
   flex-direction: column;
 }
 
-.input-wrapper {
+.info-title {
   position: relative;
   display: flex;
   align-items: center;
 }
 
-.input-container {
+.info-div {
   width: 100%;
   padding: 15px;
   color: var(--accent-color);
@@ -197,21 +196,27 @@ header h1:hover {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
-.input-container p {
-  font-size: 16px;
+.info-div p {
+  font-size: 14px;
 }
 
-.input-container h1 {
+.info-div h1 {
   color: #000;
+  font-size: 22px;
 }
 
 .infos {
   width: 100%;
 }
 
+.infos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 25px;
+}
+
 .info {
   background-color: #fff;
-  color: var(--accent-color);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
   border: none;
   border-radius: 15px;
