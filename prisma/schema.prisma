@@ -22,14 +22,14 @@ enum TipodeGasto {
 }
 
 model Carro {
-  id      Int     @id @default(autoincrement())
-  Modelo  String
-  Placa   String
-  Ano     Int
-  Marca   String
-  URL_Imagem String
-  motoristaId Int @unique
-  Motorista  Funcionario @relation(fields: [motoristaId], references: [id])
+  id                 Int     @id @default(autoincrement())
+  Modelo             String
+  Placa              String
+  Ano                Int
+  Marca              String
+  URL_Imagem         String
+  motoristaId        Int @unique
+  Motorista          Funcionario @relation(fields: [motoristaId], references: [id])
   GastosCombustivel  GastosCombustivel[] 
   GastosManutencao   GastosManutencao[]
 }
