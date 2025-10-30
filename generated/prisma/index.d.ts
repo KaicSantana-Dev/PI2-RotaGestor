@@ -2138,7 +2138,7 @@ export namespace Prisma {
     /**
      * The data needed to create a Usuario.
      */
-    data: XOR<UsuarioCreateInput, UsuarioUncheckedCreateInput>
+    data: XOR<UsuarioCreateInput, UsuarioUncheckedCreateInput,Usuario>
   }
 
   /**
