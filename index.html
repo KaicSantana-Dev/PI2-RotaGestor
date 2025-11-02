@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="icon" href="/PI2-RotaGestor/public/assets/logo/Icon.svg">
+    <link rel="icon" href="public/assets/logo/Icon.svg">
     <title>RotaGestor - Login</title>
     <style>
         body {
@@ -16,14 +16,14 @@
 <body   id="Box-Login" class="flex items-center justify-center min-h-screen bg-fixed bg-[radial-gradient(ellipse_60%_50%_at_center,_#52B69A,_#F6FAF9)] p-0 m-0">
     <div class="bg-[#EBEBEB] rounded-2xl shadow-2xl w-[450px] h-[592px] p-15 m-15">
         <div id="Logo" class="shadow-none">
-            <img src="" alt="Logo RotaGestor" class="p-auto m-auto -mt-5 mb-5">
+            <img src="public/assets/logo/logo.svg" alt="Logo RotaGestor" class="p-auto m-auto -mt-5 mb-5">
         </div>
         <div id="Usuario" class="bg-gray-700 rounded-2xl shadow-2xl w-[330px] h-[60px] mb-3 flex items-center px-4 shadow-none">
-            <img src="assets/people.svg" alt="Ícone de Pessoa" class="w-6 h-6 mr-2">
+            <img src="src/frontend/pages/login/assets/people.svg" alt="Ícone de Pessoa" class="w-6 h-6 mr-2">
             <input type="text" placeholder="Usuario" class="text-white placeholder-white placeholder-opacity-75 flex-1 outline-none">
         </div>
         <div id="Senha" class="bg-gray-700 rounded-2xl shadow-2xl w-[330px] h-[60px] mb-6 flex items-center px-4 shadow-none">
-            <img src="assets/lock.svg" alt="Ícone de Senha" class="w-5 h-5 mr-2">
+            <img src="src/frontend/pages/login/assets/lock.svg" alt="Ícone de Senha" class="w-5 h-5 mr-2">
             <input type="password" placeholder="Senha" class="text-white placeholder-white placeholder-opacity-75 flex-1 outline-none">
         </div>
         <div id="Lembrar" class="flex items-center gap-2">
@@ -33,13 +33,13 @@
             <div><p class="font-semibold text-gray-700">Lembrar Senha</p></div>
         </div>
         <div class="text-center pt-7">
-            <a href="Senha.html" class="text-[#52B69A] hover:underline font-semibold">Esqueceu a senha?</a>
+            <a href="src/frontend/pages/login/Senha.html" class="text-[#52B69A] hover:underline font-semibold">Esqueceu a senha?</a>
         </div>
         <div class="text-center">
-            <a href="Criar-Conta.html" class="text-[#52B69A] hover:underline font-semibold">Criar Conta</a>
+            <a href="src/frontend/pages/login/Criar-Conta.html" class="text-[#52B69A] hover:underline font-semibold">Criar Conta</a>
         </div>
         <div class="bg-[#52B69A] rounded-2xl w-[330px] h-[47px] mt-5">
-            <button id="Login" onclick="window.location.href='../home/inicio.html'" class="font-bold text-white bg-[#76C893] rounded-2xl w-[330px] h-[47px] transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">LOGIN</button>
+            <button id="Login" onclick="window.location.href='src/frontend/pages/home/inicio.html'" class="font-bold text-white bg-[#76C893] rounded-2xl w-[330px] h-[47px] transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">LOGIN</button>
         </div>
 </body>
 </html>
