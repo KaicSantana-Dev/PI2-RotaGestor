@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popup com Tailwind CSS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-fixed bg-[radial-gradient(ellipse_60%_50%_at_center,_#001122,_#F6FAF9)] p-0 m-0">
+
+
+    <!-- Botão para abrir o modal -->
+    <button id="abrir-popup" class="px-4 py-2 bg-blue-500 text-white rounded">Abrir Popup</button>
+
+
+
+    <!-- Modal -->
+    <div id="popup" class="fixed inset-0 bg-[radial-gradient(ellipse_60%_50%_at_center,_rgba(82,182,154,0.5),_rgba(246,250,249,0.5))] p-0 m-0 hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="bg-[#EBEBEB] rounded-2xl shadow-2xl w-[450px] h-[592px] p-15 m-15"> <!-- Fundo Branco / DIV PRINCIPAL-->
+
+                <div id="INPUT" class="bg-gray-700 rounded-2xl shadow-2xl w-[330px] h-[60px] mb-3 flex items-center px-4 shadow-none"> <!-- MODELO PADRAO DE INPUT-->
+                    <img src="ICONE Q QUISER" alt="Ícone" class="w-6 h-6 mr-2">
+                    <input type="text" placeholder="INPUT" class="text-white placeholder-white placeholder-opacity-75 flex-1 outline-none">
+                </div>
+                
+
+                <div class="bg-[#52B69A] rounded-2xl w-[330px] h-[47px] mt-5"> <!-- BOTAO PRA FECHAR O POPUP AI-->
+                    <button id="fechar-popup" class="font-bold text-white bg-[#76C893] rounded-2xl w-[330px] h-[47px] transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">CONFIRMAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/popup.js"></script>
+</body>
+</html>
