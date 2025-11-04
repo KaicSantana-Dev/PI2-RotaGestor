@@ -4,7 +4,7 @@
   --primary-color: #52b69a;
   --secondary-color: #718096;
   --accent-color: #AFBFD4;
-  --background-color: #f6faf9;
+  --background-color: #eeeeee;
 
   --text-color: #2D3748;
   --transition: all 0.3s ease-in-out;
@@ -204,6 +204,17 @@ header h1:hover {
   gap: 25px;
   margin-bottom: clamp(20px, 3vh, 30px);
   flex-shrink: 0; /* Impede que o filtro encolha */
+}
+
+@media (max-width: 1366px) {
+  .filter-container {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .filter-container > :last-child {
+    min-width: 300px;
+  }
 }
 
 .input-container label {
