@@ -6,7 +6,7 @@ export type CarroUpdateData = {
   Ano?: number;
   Placa?: string;
   URL_Imagem?: string;
-  motoristaId?: number; // relação opcional
+  motoristaId?: number; 
 };
 
 export type CarroFilter = {

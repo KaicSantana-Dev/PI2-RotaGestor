@@ -2,7 +2,7 @@ import { PrismaClient } from '../generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 
-// 🔍 Buscar usuários (todos ou filtrados)
+
 export async function findUsuarios(filter: any) {
   try {
     const usuarios = await prisma.usuario.findMany({
@@ -14,7 +14,7 @@ export async function findUsuarios(filter: any) {
   }
 }
 
-// ➕ Adicionar novo usuário
+
 export async function addUsuario(data: {
   Nome: string;
   Email: string;
@@ -30,7 +30,7 @@ export async function addUsuario(data: {
   }
 }
 
-// ✏️ Atualizar usuário existente
+
 export async function updateUsuario(
   id: number,
   data: {
@@ -50,7 +50,7 @@ export async function updateUsuario(
   }
 }
 
-// ❌ Deletar usuário
+
 export async function deleteUsuario(id: number) {
   try {
     const usuarioDeletado = await prisma.usuario.delete({
