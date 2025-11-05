@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Manutenção</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.2s ease-out;
+    }
+  </style>
+</head>
+<body class="bg-emerald-50 flex items-center justify-center min-h-screen">
+
+  <button
+    class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-medium shadow-md transition"
+    onclick="document.getElementById('modal').classList.remove('hidden')"
+  >
+    Cadastrar Manutenção
+  </button>
+
+  <div
+    id="modal"
+    class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+    onclick="if(event.target.id === 'modal'){ document.getElementById('modal').classList.add('hidden'); }"
+  >
+    <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn">
+
+      <button
+        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"
+        onclick="document.getElementById('modal').classList.add('hidden')"
+      >
+        ✕
+      </button>
+
+      <h2 class="text-lg font-semibold text-center mb-6 text-gray-800">
+        Cadastro de Manutenção
+      </h2>
+
+      <form class="space-y-4">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Data</label>
+          <input
+            type="text"
+            placeholder="Ex: 15/10/2025"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Local</label>
+          <select
+            id="localSelect"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+            onchange="toggleOutroLocal()"
+          >
+            <option value="">Selecione...</option>
+            <option value="Mecânica do Tião">Mecânica do Tião</option>
+            <option value="Oficina Silva">Oficina Silva</option>
+            <option value="Auto Center BR">Auto Center BR</option>
+            <option value="outro">Outros</option>
+          </select>
+
+          <input
+            id="outroLocalInput"
+            type="text"
+            placeholder="Digite o nome do local"
+            class="hidden mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Veículo</label>
+          <select
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          >
+            <option>Selecione...</option>
+            <option>Fiat Palio</option>
+            <option>Sandero</option>
+            <option>Uno</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Serviço</label>
+          <input
+            type="text"
+            placeholder="Ex: Troca de embreagem"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Valor</label>
+          <input
+            type="text"
+            placeholder="Ex: R$ 995,15"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-1">Descrição (opcional)</label>
+          <textarea
+            placeholder="Ex: Troca completa do sistema de embreagem"
+            rows="3"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+          ></textarea>
+        </div>
+
+        <button
+          type="button"
+          class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium py-2 rounded-lg transition"
+        >
+          Cadastrar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleOutroLocal() {
+      const select = document.getElementById('localSelect');
+      const outroInput = document.getElementById('outroLocalInput');
+      if (select.value === 'outro') {
+        outroInput.classList.remove('hidden');
+      } else {
+        outroInput.classList.add('hidden');
+        outroInput.value = '';
+      }
+    }
+  </script>
+
+</body>
+</html>

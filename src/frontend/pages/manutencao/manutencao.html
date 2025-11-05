@@ -1,314 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RotaGestor - Manutenção</title>
-    <link rel="stylesheet" href="./styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-    <link rel="icon" href="../../../../public/assets/logo/Icon.svg">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-              #modal {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RotaGestor - Manutenção</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="icon" href="../../../../public/assets/logo/Icon.svg">
 </head>
+
 <body>
-    <nav>
-        <div class="logo">
-            <img src="assets/Logo.svg">
-        </div>
-        <div class="navbar">
-            <a href="../home/inicio.html"><i class="icon fa-solid fa-house"></i>Início</a>
-            <a href="../combustivel/combustivel.html"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
-            <a href="#"><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
-            <a href="../veicheles/veiculo.html"><i class="icon fa-solid fa-car"></i> Veículos</a>
-            <a href="../pessoas/pessoas.html"><i class="icon fa-solid fa-user"></i>Pessoas</a>
-        </div>
-    </nav>
+  <nav>
+    <div class="logo">
+      <img src="assets/Logo.svg">
+    </div>
+    <div class="navbar">
+      <a href="../home/inicio.html"><i class="icon fa-solid fa-house"></i>Início</a>
+      <a href="../combustivel/combustivel.html"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
+      <a href="#"><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
+      <a href="../veicheles/veiculo.html"><i class="icon fa-solid fa-car"></i> Veículos</a>
+      <a href="../pessoas/pessoas.html"><i class="icon fa-solid fa-user"></i>Pessoas</a>
+    </div>
+  </nav>
 
-    <main>
-        <header>
-            <h1>Manutenções</h1>
-            <div class="header-buttons">
-                <button class="btn">
-                    <img src="assets/refresh-icon.svg" alt="Atualizar" class="icon-svg">
-                    Atualizar
-                </button>
-                <button class="btn">
-                    <img src="assets/document-icon.svg" alt="Documento" class="icon-svg">
-                    Exportar
-                </button>
+  <main>
+    <header>
+      <h1>Manutenções</h1>
+      <div class="header-buttons">
+        <button class="btn">
+          <img src="assets/refresh-icon.svg" alt="Atualizar" class="icon-svg">
+          Atualizar
+        </button>
+        <button class="btn">
+          <img src="assets/document-icon.svg" alt="Documento" class="icon-svg">
+          Exportar
+        </button>
 
-                <div class="account-header">
-                    <div>
-                        <i class="fa-solid fa-user"></i>
-                        <span>Conta</span>
-                    </div>
-                    <i class="fa-solid fa-gear"></i>
-                    <i class="fa-solid fa-bell"></i>
-                </div>
-                
-            </div>
-        </header>
-        <section>
-          <div class="filtro-container">
-            <div class="filtro-item">
-              <label>Modelo</label>
-              <input type="text" placeholder="Sandero">
-            </div>
-
-            <div class="filtro-item">
-              <label>Placa</label>
-              <input type="text" placeholder="AB4C-4D5H">
-            </div>
-
-            <div class="filtro-item">
-              <label>Serviços</label>
-              <select>
-                <option>Manutenção Geral</option>
-                <option>Manutenção Eletrica</option>
-              </select>
-            </div>
-
-            <div class="filtro-item">
-              <label>Valor</label>
-              <input type="text" placeholder="R$">
-            </div>
-
-            <div class="filtro-item">
-              <label>Local</label>
-              <input type="text" placeholder="Endereço">
-            </div>
-
-            <div class="filtro-item">
-              <label>Data</label>
-              <input type="date">
-            </div>
-
-            <div class="filtro-item">
-              <label>Ordenar</label>
-              <select>
-                <option>Data de Criação</option>
-                <option>Valor</option>
-              </select>
-            </div>
-
-            <button class="btn-sort">⇅</button>
-            <button id="open-modal-btn" class="btn-cadastrar">Cadastrar</button>
+        <div class="account-header">
+          <div>
+            <i class="fa-solid fa-user"></i>
+            <span>Conta</span>
           </div>
+          <i class="fa-solid fa-gear"></i>
+          <i class="fa-solid fa-bell"></i>
+        </div>
 
-        </section>
-        <section>
-          <div class="tabela-container">
-            <div class="tabela-scroll">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+      </div>
+    </header>
+    <section>
+      <div class="filtro-container">
+        <div class="filtro-item">
+          <label>Modelo</label>
+          <input type="text" placeholder="Sandero">
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="filtro-item">
+          <label>Placa</label>
+          <input type="text" placeholder="AB4C-4D5H">
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="filtro-item">
+          <label>Serviços</label>
+          <select>
+            <option>Manutenção Geral</option>
+            <option>Manutenção Eletrica</option>
+          </select>
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="filtro-item">
+          <label>Local</label>
+          <input type="text" placeholder="Ex: Mecânica do Tião">
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="filtro-item">
+          <label>Data</label>
+          <input type="date">
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="filtro-item">
+          <label>Ordenar</label>
+          <select>
+            <option>Data de Criação</option>
+            <option>Valor</option>
+          </select>
+        </div>
+        <div class="filtro-item">
+          <label>Valor</label>
+          <button class="btn-sort">⇅</button>
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-          </div>
-        </section>
-    </main>
-  </body>
+        <button class="btn-cadastrar">Cadastrar</button>
+      </div>
+
+    </section>
+    <section>
+      <div class="tabela-container">
+        <div class="tabela-scroll" id="tabela">
+
+        </div>
+    </section>
+    <section>
+      <script>
+        fetch('manutencao.json')
+          .then(res => res.json())
+          .then(dados => {
+            const tabela = document.getElementById('tabela');
+
+            dados.forEach(item => {
+
+              const linha = document.createElement('div');
+              linha.classList.add('linha');
+
+              linha.innerHTML = `
+          <div class="coluna">${item.modelo}</div>
+          <div class="coluna">${item.placa}</div>
+          <div class="coluna">${item.servico}</div>
+          <div class="coluna">${item.valor}</div>
+          <div class="coluna">${item.oficina}</div>
+          <div class="coluna">${item.hora}</div>
+          <div class="coluna">${item.data}</div>
+        `;
+
+              tabela.appendChild(linha);
+            });
+          })
+          .catch(erro => console.error("Erro ao carregar o JSON:", erro));
+      </script>
+
+
+    </section>
+  </main>
+</body>
+
 </html>
