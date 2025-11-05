@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,7 +12,6 @@
     <nav>
       <div class="logo">
         <img src="assets/Logo.svg" />
-      </div>
       <div class="navbar">
         <a href="#"><i class="icon fa-solid fa-house"></i>Início</a>
         <a href="../combustivel/combustivel.html"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
@@ -49,26 +48,6 @@
             Exportar
           </button>
 
-          <button class="btncal">
-            <img
-              src="assets/document-icon.svg"
-              alt="Documento"
-              class="icon-svg"
-            />
-            Exportar
-          </button>
-
-          <div class="bar"></div>
-
-          <button class="btncal">
-            <img
-              src="assets/document-icon.svg"
-              alt="Documento"
-              class="icon-svg"
-            />
-            Exportar
-          </button>
-
           <div class="account-header">
             <div>
               <i class="fa-solid fa-user"></i>
@@ -85,28 +64,40 @@
             <div class="info-title">
               <p>Total de Gastos</p>
             </div>
-            <h1>R$ 100.000,00</h1>
+            <div class="row">
+              <h1>R$ 100.000,00</h1>
+              <h2 class="pos">+47%</h2>
+            </div>
           </div>
 
           <div class="info-div">
             <div class="info-title">
               <p>Gasto Combustivel</p>
             </div>
-            <h1>R$ 54.352,00</h1>
+            <div class="row">
+              <h1>R$ 54.352,00</h1>
+              <h2 class="neg">-53%</h2>
+            </div>
           </div>
 
           <div class="info-div">
             <div class="info-title">
               <p>Gasto Manutenção</p>
             </div>
-            <h1>R$ 46.523,00</h1>
+            <div class="row">
+              <h1>R$ 46.523,00</h1>
+              <h2 class="pos">+47%</h2>
+            </div>
           </div>
 
           <div class="info-div">
             <div class="info-title">
               <p>Total de Veículos</p>
             </div>
-            <h1>53</h1>
+            <div class="row">
+              <h1>53</h1>
+              <h2 class="pos">+8%</h2>
+            </div>
           </div>
         </div>
         <div class="infos">
@@ -152,23 +143,26 @@
             <div class="gastos">
               <div class="gastosInfo">
                 <h1>AB3R-4321</h1>
-                <h2>R$ 1.235,00</h2>
+                <h2>R$ 0,78/Km</h2>
               </div>
               <div class="gastosInfo">
                 <h1>AB3R-4321</h1>
-                <h2>R$ 1.235,00</h2>
+                <h2>R$ 0,78/Km</h2>
               </div>
               <div class="gastosInfo">
                 <h1>AB3R-4321</h1>
-                <h2>R$ 1.235,00</h2>
+                <h2>R$ 0,78/Km</h2>
               </div>
             </div>
           </div>
         </div>
-        <div class="grafico">
+        <div class="grafico-container">
           <h1>Custo Total</h1>
+          <canvas id="meuGrafico"></canvas>
         </div>
       </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script/script.js"></script>
   </body>
 </html>
