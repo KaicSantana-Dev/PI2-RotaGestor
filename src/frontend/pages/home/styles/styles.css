@@ -37,9 +37,11 @@ body {
   transform: scale(1.05);
 }
 
+/* NAV */
 nav {
   width: clamp(200px, 20vw, 250px);
   height: 100vh;
+  overflow-y: auto; /* Caso necessário para a nav */
 }
 
 .navbar {
