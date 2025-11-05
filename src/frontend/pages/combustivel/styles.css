@@ -357,24 +357,25 @@ body {
 .filtro-container {
   display: flex;
   align-items: flex-end;
-  gap: 0.8rem;
+  gap: 2.35rem;
   flex-wrap: wrap;
   padding: 1rem 1rem;
   margin-bottom: 20px;
-  margin-left: 20px;
+  margin-left: 15px;
   border-radius: 10px;
 }
 
 .filtro-item {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 1.4rem;
 }
 
 .filtro-item label {
   font-size: 0.85rem;
   font-weight: 600;
   color: #2e3a46;
+  height: 20px;
 }
 
 .filtro-item input,
@@ -387,6 +388,8 @@ body {
   color: #6b7280;
   min-width: 100px;
   box-shadow: 0 0 0 1px #e0e0e0;
+  height: 50px;
+  width: 200px;
 }
 
 .filtro-item input:focus,
@@ -406,6 +409,8 @@ body {
   cursor: pointer;
   font-weight: 600;
   transition: background 0.2s;
+  height: 50px;
+  width: 50px;
 }
 
 .btn-cadastrar {
@@ -418,6 +423,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
+  height: 50px;
 }
 
 .btn-sort:hover,
