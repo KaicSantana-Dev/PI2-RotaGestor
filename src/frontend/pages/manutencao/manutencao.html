@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="icon" href="../../../../public/assets/logo/Icon.svg">
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
 <body>
@@ -36,7 +37,7 @@
           <img src="assets/document-icon.svg" alt="Documento" class="icon-svg">
           Exportar
         </button>
-        <button class="btn">
+        <button class="btn" id="abrir-popup">
           <img src="assets/document-icon.svg" alt="Documento" class="">
           Cadastrar
         </button>
@@ -125,8 +126,27 @@
       </script>
 
 
-    </section>
-  </main>
+<!-- Modal -->
+    <div id="popup" class="fixed inset-0 bg-[radial-gradient(ellipse_60%_50%_at_center,_rgba(82,182,154,0.5),_rgba(246,250,249,0.5))] p-0 m-0 hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="bg-[#EBEBEB] rounded-2xl shadow-2xl w-[450px] h-[592px] p-15 m-15"> <!-- Fundo Branco / DIV PRINCIPAL-->
+
+                <div id="INPUT" class="bg-[#e2e9f0] rounded-2xl shadow-2xl w-[330px] h-[60px] mb-3 flex items-center px-4 shadow-none"> <!-- MODELO PADRAO DE INPUT-->
+                    <img src="ICONE Q QUISER" alt="Ícone" class="w-6 h-6 mr-2">
+                    <input type="text" placeholder="INPUT" class="placeholder-gray-70 text-gray-700 placeholder-opacity-75 flex-1 outline-none">
+                </div>
+                
+
+                <div class="bg-[#52B69A] rounded-2xl w-[330px] h-[47px] mt-5"> <!-- BOTAO PRA FECHAR O POPUP AI-->
+                    <button id="fechar-popup" class="font-bold text-white bg-[#76C893] rounded-2xl w-[330px] h-[47px] transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">CONFIRMAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/popup.js"></script>
+  </section>
+</main>
 </body>
 
 </html>
