@@ -80,6 +80,7 @@ nav {
 
 main {
   flex: 1;
+  min-width: 0;
   height: 100vh;
   padding: 0 3vw;
   display: flex;
@@ -131,22 +132,6 @@ header h1:hover {
   background-color: #3a8b74;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(82, 182, 154, 0.3);
-}
-
-.btncal {
-  border: none;
-  background-color: #fff;
-  padding: 10px 50px;
-  height: clamp(35px, 3vw, 50px);
-  font-size: 12px;
-  border-radius: 15px;
-  font-weight: 700;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  transition: var(--transition);
 }
 
 .account-header {
@@ -258,27 +243,27 @@ header h1:hover {
   font-weight: bold;
 }
 
-.grafico {
+.grafico-container {
   margin: 1.5rem 0 2rem 0;
   width: 100%;
   height: 40rem;
   background-color: #fff;
   border-radius: 1rem;
-}
-
-.grafico h1 {
-  font-size: 22px;
   padding: 1rem;
 }
 
+.grafico-container h1 {
+  padding: 0.5rem 0 1rem 0.5rem;
+}
+
 nav .back {
-  margin: 31.3rem 0 0 1.5rem;
+  margin: 34rem 0 0 1.3rem;
   position: absolute;
-  width: 16rem;
+  width: 15rem;
 }
 
 .background {
-  margin: 35rem 0 0 3.5rem;
+  margin: 36.5rem 0 0 3rem;
   position: relative;
 }
 
@@ -305,7 +290,7 @@ nav .back {
 .gastos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 30px;
+  gap: 25px;
   margin-top: 1.5rem;
   padding: 0 1rem 0 1rem;
 }
@@ -315,9 +300,28 @@ nav .back {
 }
 
 .gastosInfo h1 {
-  font-size: 20px;
+  font-size: 16px;
 }
 
-.gastosInfo p {
+.gastosInfo h2 {
   font-size: 14px;
+}
+
+.row {
+  display: flex;
+}
+
+.row h2 {
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+  margin-left: 0.3rem;
+}
+
+.pos {
+  color: #2da784;
+}
+
+.neg {
+  color: rgba(255, 0, 0, 0.767);
 }

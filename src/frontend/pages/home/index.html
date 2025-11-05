@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <nav>
+      <div class="logo">
+        <img src="assets/Logo.svg" />
+      </div>
+      <div class="navbar">
+        <a href=""><i class="icon fa-solid fa-house"></i>Início</a>
+        <a href=""><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
+        <a href=""><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
+        <a href=""><i class="icon fa-solid fa-car"></i> Veículos</a>
+        <a href=""><i class="icon fa-solid fa-user"></i>Pessoas</a>
+      </div>
+      <img class="back" src="assets/background.svg" alt="" />
+      <div class="background">
+        <h1>Precisa de Ajuda?</h1>
+        <p>Por favor, confira nosso tutorial</p>
+        <button>DOCUMENTAÇÃO</button>
+      </div>
+    </nav>
+
+    <main>
+      <header>
+        <h1>Página Inicial</h1>
+        <div class="header-buttons">
+          <button class="btn">
+            <img
+              src="assets/refresh-icon.svg"
+              alt="Atualizar"
+              class="icon-svg"
+            />
+            Atualizar
+          </button>
+          <button class="btn">
+            <img
+              src="assets/document-icon.svg"
+              alt="Documento"
+              class="icon-svg"
+            />
+            Exportar
+          </button>
+
+          <div class="account-header">
+            <div>
+              <i class="fa-solid fa-user"></i>
+              <span>Conta</span>
+            </div>
+            <i class="fa-solid fa-gear"></i>
+            <i class="fa-solid fa-bell"></i>
+          </div>
+        </div>
+      </header>
+      <section class="content">
+        <div class="info-grafico">
+          <div class="info-div">
+            <div class="info-title">
+              <p>Total de Gastos</p>
+            </div>
+            <div class="row">
+              <h1>R$ 100.000,00</h1>
+              <h2 class="pos">+47%</h2>
+            </div>
+          </div>
+
+          <div class="info-div">
+            <div class="info-title">
+              <p>Gasto Combustivel</p>
+            </div>
+            <div class="row">
+              <h1>R$ 54.352,00</h1>
+              <h2 class="neg">-53%</h2>
+            </div>
+          </div>
+
+          <div class="info-div">
+            <div class="info-title">
+              <p>Gasto Manutenção</p>
+            </div>
+            <div class="row">
+              <h1>R$ 46.523,00</h1>
+              <h2 class="pos">+47%</h2>
+            </div>
+          </div>
+
+          <div class="info-div">
+            <div class="info-title">
+              <p>Total de Veículos</p>
+            </div>
+            <div class="row">
+              <h1>53</h1>
+              <h2 class="pos">+8%</h2>
+            </div>
+          </div>
+        </div>
+        <div class="infos">
+          <div class="info">
+            <img src="assets/icon-posto.svg" alt="" />
+            <p>Maiores Gastos Combustível</p>
+            <div class="gastos">
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 1.235,00</h2>
+              </div>
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 1.235,00</h2>
+              </div>
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 1.235,00</h2>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <img src="assets/icon-manut.svg" alt="" />
+            <p>Maiores Gastos Manutenção</p>
+            <div class="gastos">
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 1.235,00</h2>
+              </div>
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 1.235,00</h2>
+              </div>
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 1.235,00</h2>
+              </div>
+            </div>
+          </div>
+          <div class="info">
+            <img src="assets/icon-car.svg" alt="" />
+            <p>Maiores Médias Consumos</p>
+            <div class="gastos">
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 0,78/Km</h2>
+              </div>
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 0,78/Km</h2>
+              </div>
+              <div class="gastosInfo">
+                <h1>AB3R-4321</h1>
+                <h2>R$ 0,78/Km</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grafico-container">
+          <h1>Custo Total</h1>
+          <canvas id="meuGrafico"></canvas>
+        </div>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script/script.js"></script>
+  </body>
+</html>
