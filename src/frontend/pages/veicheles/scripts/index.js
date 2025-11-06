@@ -668,8 +668,8 @@ async function cadastrarVeiculo() {
 
       // Validações
       const modeloInput = document.getElementById("modelo-input")
-      const placaInput = document.getElementById("placa")
-      const motoristaIdInput = document.getElementById("motoristaId")
+      const placaInput = document.getElementById("placa-input")
+      const motoristaIdInput = document.getElementById("motoristaId-input")
 
       function validarCampo(input, errorElement, validacao, mensagemErro) {
         const valor = input.value.trim()
@@ -708,9 +708,9 @@ async function cadastrarVeiculo() {
       })
     },
     preConfirm: () => {
-      const modelo = document.getElementById("modelo").value.trim()
-      const placa = document.getElementById("placa").value.trim()
-      const motoristaId = document.getElementById("motoristaId").value.trim()
+      const modelo = document.getElementById("modelo-input").value.trim()
+      const placa = document.getElementById("placa-input").value.trim()
+      const motoristaId = document.getElementById("motoristaId-input").value.trim()
       const statusToggle = document.getElementById("statusToggle")
       const ativo = statusToggle.classList.contains("active")
 

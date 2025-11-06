@@ -81,6 +81,9 @@ app.use((err, req, res, next) => {
   })
 })
 
+// Aumenta o limite do JSON e URL encoded
+
+
 // Iniciar servidor
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`)

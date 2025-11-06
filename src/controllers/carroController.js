@@ -14,19 +14,15 @@ export const criarCarro = async (req, res) => {
 
     // Verificar se motorista existe
     const motorista = await prisma.usuario.findUnique({
-      where: { id: Number.parseInt(motoristaId) },
+      where: { id: Number(motoristaId) },
     })
 
     if (!motorista) {
-      return res.status(404).json({
-        erro: "Motorista não encontrado",
-      })
+      return res.status(404).json({ erro: "Motorista não encontrado" })
     }
 
     if (!motorista.motorista) {
-      return res.status(400).json({
-        erro: "Usuário não é um motorista",
-      })
+      return res.status(400).json({ erro: "Usuário não é um motorista" })
     }
 
     // Verificar se placa já existe
@@ -35,17 +31,23 @@ export const criarCarro = async (req, res) => {
     })
 
     if (placaExistente) {
-      return res.status(400).json({
-        erro: "Placa já cadastrada",
-      })
+      return res.status(400).json({ erro: "Placa já cadastrada" })
+    }
+
+    // Converter imagem base64 em Buffer (se existir)
+    let imagemBuffer = null
+    if (imagem) {
+      // Se vier com prefixo data:image/png;base64,...
+      const base64Data = imagem.split(",").pop()
+      imagemBuffer = Buffer.from(base64Data, "base64")
     }
 
     const carro = await prisma.carro.create({
       data: {
         modelo,
         placa,
-        motoristaId: Number.parseInt(motoristaId),
-        imagem: imagem || null,
+        motoristaId: Number(motoristaId),
+        imagem: imagemBuffer, // agora é um Buffer
         status: status || "ativo",
       },
       include: {
@@ -65,6 +67,7 @@ export const criarCarro = async (req, res) => {
     })
   }
 }
+
 
 // Listar todos os carros
 export const listarCarros = async (req, res) => {
