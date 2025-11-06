@@ -71,8 +71,8 @@ function converterImagemParaBase64(file) {
 }
 
 function converterImagemBuffer(imagemBuffer) {
-  // Se não há imagem, retorna placeholder
-  if (!imagemBuffer) {
+  // Se não há imagem ou é null/undefined, retorna placeholder
+  if (!imagemBuffer || imagemBuffer === null || imagemBuffer === undefined) {
     return "https://via.placeholder.com/400x250?text=Sem+Imagem"
   }
 
@@ -91,8 +91,13 @@ function converterImagemBuffer(imagemBuffer) {
   }
 
   // Quando o Prisma retorna Bytes, vem como {type: "Buffer", data: [array]}
-  if (imagemBuffer.type === "Buffer" && Array.isArray(imagemBuffer.data)) {
+  if (imagemBuffer && imagemBuffer.type === "Buffer" && Array.isArray(imagemBuffer.data)) {
     try {
+      // Verifica se o array não está vazio
+      if (imagemBuffer.data.length === 0) {
+        return "https://via.placeholder.com/400x250?text=Sem+Imagem"
+      }
+
       // Converte array de bytes para string base64
       const uint8Array = new Uint8Array(imagemBuffer.data)
       let binary = ""
@@ -108,12 +113,34 @@ function converterImagemBuffer(imagemBuffer) {
   }
 
   // Fallback para formato antigo (se imagemBuffer.data existir diretamente)
-  if (imagemBuffer.data && Array.isArray(imagemBuffer.data)) {
+  if (imagemBuffer && imagemBuffer.data && Array.isArray(imagemBuffer.data)) {
     try {
+      if (imagemBuffer.data.length === 0) {
+        return "https://via.placeholder.com/400x250?text=Sem+Imagem"
+      }
+
       const uint8Array = new Uint8Array(imagemBuffer.data)
       let binary = ""
       for (let i = 0; i < uint8Array.length; i++) {
         binary += String.fromCharCode(uint8Array[i])
+      }
+      const base64 = btoa(binary)
+      return `data:image/jpeg;base64,${base64}`
+    } catch (error) {
+      console.error("Erro ao converter buffer de imagem:", error)
+      return "https://via.placeholder.com/400x250?text=Erro+ao+Carregar"
+    }
+  }
+
+  // Se é um Uint8Array direto (não deveria acontecer no frontend, mas por segurança)
+  if (imagemBuffer instanceof Uint8Array) {
+    try {
+      if (imagemBuffer.length === 0) {
+        return "https://via.placeholder.com/400x250?text=Sem+Imagem"
+      }
+      let binary = ""
+      for (let i = 0; i < imagemBuffer.length; i++) {
+        binary += String.fromCharCode(imagemBuffer[i])
       }
       const base64 = btoa(binary)
       return `data:image/jpeg;base64,${base64}`

@@ -38,8 +38,13 @@ export const criarCarro = async (req, res) => {
     let imagemBuffer = null
     if (imagem) {
       // Se vier com prefixo data:image/png;base64,...
-      const base64Data = imagem.split(",").pop()
+      const base64Data = imagem.includes(",") ? imagem.split(",").pop() : imagem
       imagemBuffer = Buffer.from(base64Data, "base64")
+    } else {
+      // Se não há imagem, cria um placeholder (imagem 1x1 transparente em PNG)
+      // Base64 de uma imagem PNG 1x1 transparente
+      const placeholderBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+      imagemBuffer = Buffer.from(placeholderBase64, "base64")
     }
 
     const carro = await prisma.carro.create({
@@ -189,15 +194,29 @@ export const atualizarCarro = async (req, res) => {
       }
     }
 
+    // Converter imagem base64 em Buffer (se existir e for diferente de null)
+    let imagemBuffer = undefined
+    if (imagem !== undefined && imagem !== null) {
+      // Se vier com prefixo data:image/png;base64,...
+      const base64Data = imagem.includes(",") ? imagem.split(",").pop() : imagem
+      imagemBuffer = Buffer.from(base64Data, "base64")
+    }
+
+    const dadosAtualizacao = {
+      ...(modelo && { modelo }),
+      ...(placa && { placa }),
+      ...(status && { status }),
+      ...(motoristaId && { motoristaId: Number.parseInt(motoristaId) }),
+    }
+
+    // Só adiciona imagem se foi fornecida
+    if (imagemBuffer !== undefined) {
+      dadosAtualizacao.imagem = imagemBuffer
+    }
+
     const carro = await prisma.carro.update({
       where: { id: Number.parseInt(id) },
-      data: {
-        ...(modelo && { modelo }),
-        ...(placa && { placa }),
-        ...(status && { status }),
-        ...(imagem !== undefined && { imagem }),
-        ...(motoristaId && { motoristaId: Number.parseInt(motoristaId) }),
-      },
+      data: dadosAtualizacao,
       include: {
         motorista: true,
       },
