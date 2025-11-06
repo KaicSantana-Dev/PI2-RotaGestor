@@ -62,6 +62,7 @@ function normalizar(str) {
 }
 
 function converterImagemParaBase64(file) {
+  console.log("converterImagemParaBase64", file)
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(reader.result)
@@ -72,6 +73,7 @@ function converterImagemParaBase64(file) {
 
 function converterImagemBuffer(imagemBuffer) {
   // Se não há imagem ou é null/undefined, retorna placeholder
+  console.log("converterImagemBuffer", imagemBuffer)
   if (!imagemBuffer || imagemBuffer === null || imagemBuffer === undefined) {
     return "https://via.placeholder.com/400x250?text=Sem+Imagem"
   }
@@ -86,8 +88,20 @@ function converterImagemBuffer(imagemBuffer) {
     if (imagemBuffer.startsWith("http")) {
       return imagemBuffer
     }
-    // Se é base64 puro, adiciona o prefixo
-    return `data:image/jpeg;base64,${imagemBuffer}`
+    // Se é base64 puro (agora vem do backend como string base64), adiciona o prefixo
+    // Tenta detectar o tipo de imagem pelo início do base64
+    // PNG: iVBORw0KGgo
+    // JPEG: /9j/4AAQ
+    // GIF: R0lGODlh
+    let mimeType = "image/jpeg" // padrão
+    if (imagemBuffer.startsWith("iVBORw0KGgo")) {
+      mimeType = "image/png"
+    } else if (imagemBuffer.startsWith("/9j/4AAQ") || imagemBuffer.startsWith("/9j/")) {
+      mimeType = "image/jpeg"
+    } else if (imagemBuffer.startsWith("R0lGODlh")) {
+      mimeType = "image/gif"
+    }
+    return `data:${mimeType};base64,${imagemBuffer}`
   }
 
   // Quando o Prisma retorna Bytes, vem como {type: "Buffer", data: [array]}

@@ -14,8 +14,9 @@ const PORT = process.env.PORT || 3000
 
 // Middlewares
 app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// Aumentar limite para 10MB para suportar imagens em base64
+app.use(express.json({ limit: "10mb" }))
+app.use(express.urlencoded({ extended: true, limit: "10mb" }))
 
 // Log de requisições (desenvolvimento)
 if (process.env.NODE_ENV === "development") {
@@ -77,6 +78,16 @@ app.use((req, res) => {
 // Tratamento de erros global
 app.use((err, req, res, next) => {
   console.error("Erro não tratado:", err)
+  
+  // Tratamento específico para payload muito grande
+  if (err.type === "entity.too.large") {
+    return res.status(413).json({
+      erro: "Payload muito grande",
+      mensagem: "A imagem enviada é muito grande. Tente uma imagem menor (máximo 5MB).",
+      detalhes: process.env.NODE_ENV === "development" ? err.message : undefined,
+    })
+  }
+  
   res.status(500).json({
     erro: "Erro interno do servidor",
     detalhes: process.env.NODE_ENV === "development" ? err.message : undefined,

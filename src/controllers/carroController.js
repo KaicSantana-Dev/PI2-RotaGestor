@@ -1,5 +1,89 @@
 import prisma from "../prisma/client.js"
 
+// Função auxiliar para converter Buffer de imagem para base64
+function converterBufferParaBase64(buffer) {
+  console.log("converterBufferParaBase64 - tipo:", typeof buffer, "isBuffer:", Buffer.isBuffer(buffer))
+  console.log("converterBufferParaBase64 - valor:", buffer)
+  console.log("converterBufferParaBase64 - constructor:", buffer?.constructor?.name)
+  
+  if (!buffer) {
+    console.log("Buffer é null/undefined")
+    return null
+  }
+  
+  // Se já é uma string, retorna como está
+  if (typeof buffer === "string") {
+    console.log("Já é string, retornando como está")
+    return buffer
+  }
+  
+  // Se é um Buffer, converte para base64
+  if (Buffer.isBuffer(buffer)) {
+    console.log("É um Buffer, convertendo para base64")
+    return buffer.toString("base64")
+  }
+  
+  // Se é um Uint8Array (formato que o Prisma pode retornar)
+  if (buffer instanceof Uint8Array) {
+    console.log("É um Uint8Array, convertendo para base64")
+    return Buffer.from(buffer).toString("base64")
+  }
+  
+  // Se é um objeto com data (formato Prisma serializado)
+  if (buffer && typeof buffer === "object") {
+    console.log("É um objeto, verificando propriedades:", Object.keys(buffer))
+    console.log("É um objeto, buffer completo:", JSON.stringify(buffer).substring(0, 200))
+    
+    // Se tem propriedade data como array
+    if (Array.isArray(buffer.data)) {
+      console.log("Tem buffer.data como array, convertendo")
+      return Buffer.from(buffer.data).toString("base64")
+    }
+    
+    // Se tem propriedade data como Uint8Array
+    if (buffer.data instanceof Uint8Array) {
+      console.log("Tem buffer.data como Uint8Array, convertendo")
+      return Buffer.from(buffer.data).toString("base64")
+    }
+    
+    // Se é um objeto Buffer serializado
+    if (buffer.type === "Buffer" && Array.isArray(buffer.data)) {
+      console.log("É um objeto Buffer serializado, convertendo")
+      return Buffer.from(buffer.data).toString("base64")
+    }
+    
+    // Tentar converter diretamente se for um objeto iterável
+    try {
+      const arr = Array.from(buffer)
+      if (arr.length > 0) {
+        console.log("É um objeto iterável, convertendo")
+        return Buffer.from(arr).toString("base64")
+      }
+    } catch (e) {
+      console.log("Não é um objeto iterável")
+    }
+  }
+  
+  console.log("Formato desconhecido, retornando null")
+  return null
+}
+
+// Função auxiliar para transformar carro antes de enviar (converte imagem Buffer para base64)
+function transformarCarroParaResposta(carro) {
+  if (!carro) return null
+  
+  console.log("transformarCarroParaResposta - carro.imagem:", carro.imagem)
+  console.log("transformarCarroParaResposta - tipo de imagem:", typeof carro.imagem)
+  
+  const imagemBase64 = converterBufferParaBase64(carro.imagem)
+  console.log("transformarCarroParaResposta - imagemBase64:", imagemBase64 ? `${imagemBase64.substring(0, 50)}...` : "null")
+  
+  return {
+    ...carro,
+    imagem: imagemBase64,
+  }
+}
+
 // Criar novo carro
 export const criarCarro = async (req, res) => {
   try {
@@ -62,7 +146,7 @@ export const criarCarro = async (req, res) => {
 
     res.status(201).json({
       mensagem: "Carro criado com sucesso",
-      carro,
+      carro: transformarCarroParaResposta(carro),
     })
   } catch (erro) {
     console.error("Erro ao criar carro:", erro)
@@ -101,7 +185,21 @@ export const listarCarros = async (req, res) => {
       },
     })
 
-    res.json({ carros })
+    // Log para debug - verificar se imagem está presente
+    if (carros.length > 0) {
+      console.log("Primeiro carro antes da transformação:", {
+        id: carros[0].id,
+        modelo: carros[0].modelo,
+        temImagem: !!carros[0].imagem,
+        tipoImagem: typeof carros[0].imagem,
+        keys: Object.keys(carros[0]),
+      })
+    }
+
+    // Converte imagens Buffer para base64 antes de enviar
+    const carrosTransformados = carros.map(transformarCarroParaResposta)
+
+    res.json({ carros: carrosTransformados })
   } catch (erro) {
     console.error("Erro ao listar carros:", erro)
     res.status(500).json({
@@ -141,7 +239,7 @@ export const buscarCarroPorId = async (req, res) => {
       })
     }
 
-    res.json({ carro })
+    res.json({ carro: transformarCarroParaResposta(carro) })
   } catch (erro) {
     console.error("Erro ao buscar carro:", erro)
     res.status(500).json({
@@ -224,7 +322,7 @@ export const atualizarCarro = async (req, res) => {
 
     res.json({
       mensagem: "Carro atualizado com sucesso",
-      carro,
+      carro: transformarCarroParaResposta(carro),
     })
   } catch (erro) {
     console.error("Erro ao atualizar carro:", erro)
