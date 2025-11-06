@@ -1,31 +1,21 @@
-import pool from "../../banco/db-manutencao.js"
+import prisma from "../prisma/client.js"
 
 // Listar todas as manutenções
 export const listarManutencoes = async (req, res) => {
   try {
-    const query = `
-      SELECT 
-        id,
-        modelo,
-        placa,
-        servico,
-        valor,
-        oficina,
-        hora,
-        data
-      FROM manutencoes
-      ORDER BY data DESC
-    `
-    
-    const result = await pool.query(query)
+    const manutencoes = await prisma.manutencao.findMany({
+      orderBy: {
+        data: 'desc'
+      }
+    })
     
     // Se não houver dados, retornar array vazio
-    if (!result.rows || result.rows.length === 0) {
+    if (!manutencoes || manutencoes.length === 0) {
       return res.json([])
     }
     
     // Converter dados para formato seguro
-    const manutencoesJson = result.rows.map(manutencao => ({
+    const manutencoesJson = manutencoes.map(manutencao => ({
       id: manutencao.id,
       modelo: manutencao.modelo || '',
       placa: manutencao.placa || '',
@@ -63,24 +53,17 @@ export const criarManutencao = async (req, res) => {
       })
     }
 
-    const query = `
-      INSERT INTO manutencoes (modelo, placa, servico, valor, oficina, hora, data)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *
-    `
-    
-    const values = [
-      modelo.trim(),
-      placa.trim(),
-      servico.trim(),
-      parseFloat(valor),
-      oficina.trim(),
-      hora.trim(),
-      data
-    ]
-
-    const result = await pool.query(query, values)
-    const novaManutencao = result.rows[0]
+    const novaManutencao = await prisma.manutencao.create({
+      data: {
+        modelo: modelo.trim(),
+        placa: placa.trim(),
+        servico: servico.trim(),
+        valor: parseFloat(valor),
+        oficina: oficina.trim(),
+        hora: hora.trim(),
+        data: new Date(data)
+      }
+    })
 
     // Retornar dados formatados
     const manutencaoJson = {
@@ -111,27 +94,15 @@ export const buscarManutencaoPorId = async (req, res) => {
   try {
     const { id } = req.params
     
-    const query = `
-      SELECT 
-        id,
-        modelo,
-        placa,
-        servico,
-        valor,
-        oficina,
-        hora,
-        data
-      FROM manutencoes
-      WHERE id = $1
-    `
+    const manutencao = await prisma.manutencao.findUnique({
+      where: {
+        id: parseInt(id)
+      }
+    })
     
-    const result = await pool.query(query, [id])
-    
-    if (result.rows.length === 0) {
+    if (!manutencao) {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
-    
-    const manutencao = result.rows[0]
     
     // Formatar dados
     const manutencaoJson = {
@@ -162,68 +133,51 @@ export const atualizarManutencao = async (req, res) => {
     const { modelo, placa, servico, valor, oficina, hora, data } = req.body
 
     // Verificar se a manutenção existe
-    const checkQuery = `SELECT id FROM manutencoes WHERE id = $1`
-    const checkResult = await pool.query(checkQuery, [id])
+    const manutencaoExistente = await prisma.manutencao.findUnique({
+      where: {
+        id: parseInt(id)
+      }
+    })
     
-    if (checkResult.rows.length === 0) {
+    if (!manutencaoExistente) {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
 
-    // Construir query de atualização dinamicamente
-    const updates = []
-    const values = []
-    let paramIndex = 1
+    // Construir objeto de atualização dinamicamente
+    const updateData = {}
 
     if (modelo !== undefined) {
-      updates.push(`modelo = $${paramIndex}`)
-      values.push(modelo.trim())
-      paramIndex++
+      updateData.modelo = modelo.trim()
     }
     if (placa !== undefined) {
-      updates.push(`placa = $${paramIndex}`)
-      values.push(placa.trim())
-      paramIndex++
+      updateData.placa = placa.trim()
     }
     if (servico !== undefined) {
-      updates.push(`servico = $${paramIndex}`)
-      values.push(servico.trim())
-      paramIndex++
+      updateData.servico = servico.trim()
     }
     if (valor !== undefined) {
-      updates.push(`valor = $${paramIndex}`)
-      values.push(parseFloat(valor))
-      paramIndex++
+      updateData.valor = parseFloat(valor)
     }
     if (oficina !== undefined) {
-      updates.push(`oficina = $${paramIndex}`)
-      values.push(oficina.trim())
-      paramIndex++
+      updateData.oficina = oficina.trim()
     }
     if (hora !== undefined) {
-      updates.push(`hora = $${paramIndex}`)
-      values.push(hora.trim())
-      paramIndex++
+      updateData.hora = hora.trim()
     }
     if (data !== undefined) {
-      updates.push(`data = $${paramIndex}`)
-      values.push(data)
-      paramIndex++
+      updateData.data = new Date(data)
     }
 
-    if (updates.length === 0) {
+    if (Object.keys(updateData).length === 0) {
       return res.status(400).json({ erro: "Nenhum campo para atualizar" })
     }
 
-    values.push(id)
-    const updateQuery = `
-      UPDATE manutencoes
-      SET ${updates.join(', ')}
-      WHERE id = $${paramIndex}
-      RETURNING *
-    `
-
-    const result = await pool.query(updateQuery, values)
-    const manutencao = result.rows[0]
+    const manutencao = await prisma.manutencao.update({
+      where: {
+        id: parseInt(id)
+      },
+      data: updateData
+    })
 
     // Formatar dados
     const manutencaoJson = {
@@ -253,15 +207,21 @@ export const deletarManutencao = async (req, res) => {
     const { id } = req.params
     
     // Verificar se a manutenção existe
-    const checkQuery = `SELECT id FROM manutencoes WHERE id = $1`
-    const checkResult = await pool.query(checkQuery, [id])
+    const manutencaoExistente = await prisma.manutencao.findUnique({
+      where: {
+        id: parseInt(id)
+      }
+    })
     
-    if (checkResult.rows.length === 0) {
+    if (!manutencaoExistente) {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
 
-    const deleteQuery = `DELETE FROM manutencoes WHERE id = $1`
-    await pool.query(deleteQuery, [id])
+    await prisma.manutencao.delete({
+      where: {
+        id: parseInt(id)
+      }
+    })
     
     res.json({ mensagem: "Removida com sucesso!" })
   } catch (erro) {
