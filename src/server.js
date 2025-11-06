@@ -4,28 +4,6 @@ import dotenv from "dotenv"
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import carroRoutes from "./routes/carroRoutes.js"
 import gastosRoutes from "./routes/gastosRoutes.js"
-import manutencaoRoutes from "./routes/manutencaoRoutes.js";
-
-import { sequelize } from "../banco/db.js"
-// Importar o modelo para que seja sincronizado
-import "./models/manutencaoModel.js"
-
-// Testar conexão e sincronizar modelos
-async function inicializarBanco() {
-  try {
-    await sequelize.authenticate()
-    console.log("✅ Conexão com o banco de dados estabelecida")
-    
-    // Sincroniza o modelo com o banco (só em dev!)
-    await sequelize.sync({ alter: true })
-    console.log("🧩 Modelos sincronizados com o banco")
-  } catch (err) {
-    console.error("❌ Erro ao conectar/sincronizar com o banco:", err.message)
-    console.error("Stack:", err.stack)
-  }
-}
-
-inicializarBanco()
 
 // Carregar variáveis de ambiente
 dotenv.config()
@@ -86,8 +64,6 @@ app.get("/veiculos", (req, res) => {
 app.use("/api/usuarios", usuarioRoutes)
 app.use("/api/carros", carroRoutes)
 app.use("/api/gastos", gastosRoutes)
-app.use("/api/manutencoes", manutencaoRoutes);
-
 
 // Tratamento de rotas não encontradas
 app.use((req, res) => {
