@@ -1,0 +1,66 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  senha     String
+  motorista Boolean  @default(false)
+  cnh       String?
+  carros    Carro[]
+  criadoEm  DateTime @default(now())
+
+  @@map("usuarios")
+}
+
+enum TipoDeGasto {
+  Combustivel
+  Manutencao
+}
+
+model Carro {
+  id                Int                 @id @default(autoincrement())
+  modelo            String
+  placa             String              @unique
+  status            String              @default("ativo")
+  imagem            String?
+  motoristaId       Int
+  motorista         Usuario             @relation(fields: [motoristaId], references: [id], onDelete: Cascade)
+  gastosCombustivel GastosCombustivel[]
+  gastosManutencao  GastosManutencao[]
+  criadoEm          DateTime            @default(now())
+  atualizadoEm      DateTime            @updatedAt
+
+  @@map("carros")
+}
+
+model GastosCombustivel {
+  id       Int      @id @default(autoincrement())
+  carroId  Int
+  carro    Carro    @relation(fields: [carroId], references: [id], onDelete: Cascade)
+  valor    Decimal  @db.Decimal(10, 2)
+  posto    String
+  data     DateTime @default(now())
+  criadoEm DateTime @default(now())
+
+  @@map("gastos_combustivel")
+}
+
+model GastosManutencao {
+  id       Int      @id @default(autoincrement())
+  carroId  Int
+  carro    Carro    @relation(fields: [carroId], references: [id], onDelete: Cascade)
+  valor    Decimal  @db.Decimal(10, 2)
+  local    String
+  data     DateTime @default(now())
+  criadoEm DateTime @default(now())
+
+  @@map("gastos_manutencao")
+}

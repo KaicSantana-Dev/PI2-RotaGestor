@@ -1,29 +1,99 @@
-// Importa o Express
-const express = require('express');
-const app = express();
-const PORT = 3000;
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+import usuarioRoutes from "./routes/usuarioRoutes.js"
+import carroRoutes from "./routes/carroRoutes.js"
+import gastosRoutes from "./routes/gastosRoutes.js"
 
-// Middleware para permitir JSON no body das requisições
-app.use(express.json());
+// Carregar variáveis de ambiente
+dotenv.config()
+
+const app = express()
+const PORT = process.env.PORT || 3000
+
+// Middlewares
+app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+// Log de requisições (desenvolvimento)
+if (process.env.NODE_ENV === "development") {
+  app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`)
+    next()
+  })
+}
+
+
+app.use(express.static("./src/frontend/pages/home/"));
+
+
 
 // Rota principal
-app.get('/', (req, res) => {
-  res.send('Servidor Express rodando com sucesso 🚀');
+app.use("/", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/home/" });
 });
 
-// Exemplo de rota com parâmetro
-app.get('/saudacao/:nome', (req, res) => {
-  const nome = req.params.nome;
-  res.send(`Olá, ${nome}! Seja bem-vindo 😄`);
+
+app.use(express.static("./src/frontend/pages/combustivel/"));
+// Rota principal
+app.use("/combustivel", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/combustivel/" });
 });
 
-// Exemplo de rota POST
-app.post('/dados', (req, res) => {
-  const dados = req.body;
-  res.json({ mensagem: 'Dados recebidos com sucesso!', dados });
+
+app.use(express.static("./src/frontend/pages/login/"));
+// Rota principal
+app.use("/login", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/login/" });
 });
 
-// Inicia o servidor
+
+app.use(express.static("./src/frontend/pages/manutencao/"));
+// Rota principal
+app.use("/manutencao", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/manutencao/" });
+});
+
+app.use(express.static("./src/frontend/pages/pessoas/"));
+// Rota principal
+app.use("/pessoas", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/pessoas/" });
+});
+
+
+app.use(express.static("./src/frontend/pages/veicheles/"));
+// Rota principal
+app.use("/veiculos", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/veicheles/" });
+});
+
+
+app.use("/api/usuarios", usuarioRoutes)
+app.use("/api/carros", carroRoutes)
+app.use("/api/gastos", gastosRoutes)
+
+// Tratamento de rotas não encontradas
+app.use((req, res) => {
+  res.status(404).json({
+    erro: "Rota não encontrada",
+  })
+})
+
+// Tratamento de erros global
+app.use((err, req, res, next) => {
+  console.error("Erro não tratado:", err)
+  res.status(500).json({
+    erro: "Erro interno do servidor",
+    detalhes: process.env.NODE_ENV === "development" ? err.message : undefined,
+  })
+})
+
+// Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
+  console.log(`🚀 Servidor rodando na porta ${PORT}`)
+  console.log(`📍 Ambiente: ${process.env.NODE_ENV || "development"}`)
+  console.log(`🔗 URL: http://localhost:${PORT}`)
+})
+
+export default app
