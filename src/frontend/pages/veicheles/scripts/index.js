@@ -340,27 +340,20 @@ function renderizarCards(veiculosFiltrados = vehicles) {
                         ${veiculo.motorista}
                     </h4>
                     
-                    <div class="cnh-info" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #4A5568;">
+                    <div class="cnh-info" style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 14px; color: #4A5568;">
                         <div class="cnh-icon" style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px;">ID</div>
                         <span>CNH: ${veiculo.cnh}</span>
                     </div>
                     
-                    <div class="status-container" style="margin-top: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
                         <div class="status-badge ${veiculo.ativo ? "active" : "maintenance"}">
                             <span class="status-dot"></span>
                             <span>${veiculo.ativo ? "Ativo" : "Inativo"}</span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="monthly-cost" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-                    <div class="cost-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span class="cost-label" style="font-size: 12px; font-weight: 600; color: #718096; text-transform: uppercase;">Gasto/m</span>
-                        <span class="cost-value" style="font-size: 16px; font-weight: 700; color: #2D3748;">${formatarMoeda(veiculo.gastoMensal)}</span>
-                    </div>
-                    <div class="cost-item" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="cost-label" style="font-size: 12px; font-weight: 600; color: #718096; text-transform: uppercase;">Em atividade</span>
-                        <span class="time-value" style="font-size: 14px; font-weight: 600; color: #52b69a;">${calcularTempoAtividade(veiculo.dataInicio)}</span>
+                        <div style="text-align: right;">
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; margin-bottom: 4px;">Em atividade</span>
+                            <span style="font-size: 14px; font-weight: 600; color: #52b69a;">${calcularTempoAtividade(veiculo.dataInicio)}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1080,14 +1073,7 @@ async function visualizarVeiculo(id) {
                             </div>
                             <div class="detail-value">${veiculo.cnh}</div>
                         </div>
-                        
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                <i class="fas fa-dollar-sign"></i>
-                                Gasto Mensal
-                            </div>
-                            <div class="detail-value">${formatarMoeda(veiculo.gastoMensal)}</div>
-                        </div>
+                      
                         
                         <div class="detail-item">
                             <div class="detail-label">
