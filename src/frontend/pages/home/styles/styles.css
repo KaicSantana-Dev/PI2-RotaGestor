@@ -319,11 +319,3 @@ nav .back {
   align-items: center;
   margin-left: 0.3rem;
 }
-
-.pos {
-  color: #2da784;
-}
-
-.neg {
-  color: rgba(255, 0, 0, 0.767);
-}
