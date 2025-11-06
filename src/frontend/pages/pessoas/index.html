@@ -44,17 +44,24 @@
       <div class="filtro-container">
         <div class="filtro-item">
           <label>Nome</label>
-          <input type="text" placeholder="Paulo">
+          <input type="text" id="filtroNome" placeholder="Paulo">
         </div>
 
         <div class="filtro-item">
           <label>CNH</label>
-          <input type="text" placeholder="XXXXXXXXX-X">
+          <input type="text" id="filtroCNH" placeholder="XXXXXXXXX-X">
         </div>
 
         <div class="filtro-item">
           <label>Data</label>
-          <input type="date">
+          <input type="date" id="filtroData">
+        </div>
+
+        <div class="filtro-item">
+          <button class="btn" id="btnLimparFiltros" onclick="limparFiltros()" title="Limpar filtros">
+            <i class="fa-solid fa-eraser"></i>
+            Limpar
+          </button>
         </div>
 
         <div class="filtro-item">
@@ -83,6 +90,9 @@
     </section>
     <section>
       <script>
+        // Variável global para armazenar todos os usuários
+        window.todosUsuarios = [];
+
         // Função para formatar data
         function formatarData(dataString) {
           const data = new Date(dataString);
@@ -93,28 +103,59 @@
           });
         }
 
-        // Buscar dados da API
-        fetch('/api/usuarios')
-          .then(res => {
-            if (!res.ok) {
-              throw new Error('Erro ao buscar dados da API');
+        // Função para filtrar usuários (global)
+        window.filtrarUsuarios = function() {
+          const filtroNome = document.getElementById('filtroNome').value.toLowerCase().trim();
+          const filtroCNH = document.getElementById('filtroCNH').value.toLowerCase().trim();
+          const filtroData = document.getElementById('filtroData').value;
+
+          let usuariosFiltrados = window.todosUsuarios.filter(usuario => {
+            // Filtro por nome
+            if (filtroNome && !usuario.nome.toLowerCase().includes(filtroNome)) {
+              return false;
             }
-            return res.json();
-          })
-          .then(dados => {
-            const tabela = document.getElementById('tabela');
 
-            // Limpar tabela antes de adicionar novos dados
-            tabela.innerHTML = '';
+            // Filtro por CNH
+            const cnhUsuario = usuario.cnh ? usuario.cnh.toLowerCase() : 'n/a';
+            if (filtroCNH && !cnhUsuario.includes(filtroCNH)) {
+              return false;
+            }
 
-            // Verificar se há usuários
-            if (!dados.usuarios || dados.usuarios.length === 0) {
-              tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhuma pessoa cadastrada</div></div>';
-              return;
+            // Filtro por data
+            if (filtroData) {
+              const dataUsuario = new Date(usuario.criadoEm);
+              const dataFiltro = new Date(filtroData);
+              
+              // Comparar apenas a data (ignorar hora)
+              const dataUsuarioFormatada = new Date(dataUsuario.getFullYear(), dataUsuario.getMonth(), dataUsuario.getDate());
+              const dataFiltroFormatada = new Date(dataFiltro.getFullYear(), dataFiltro.getMonth(), dataFiltro.getDate());
+              
+              if (dataUsuarioFormatada.getTime() !== dataFiltroFormatada.getTime()) {
+                return false;
+              }
+            }
+
+            return true;
+          });
+
+          exibirUsuarios(usuariosFiltrados);
+        };
+
+        // Função para exibir usuários na tabela
+        function exibirUsuarios(usuarios) {
+          const tabela = document.getElementById('tabela');
+
+          // Limpar tabela antes de adicionar novos dados
+          tabela.innerHTML = '';
+
+          // Verificar se há usuários
+          if (!usuarios || usuarios.length === 0) {
+            tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhuma pessoa encontrada</div></div>';
+            return;
             }
 
             // Iterar sobre os usuários
-            dados.usuarios.forEach(usuario => {
+            usuarios.forEach(usuario => {
               const linha = document.createElement('div');
               linha.classList.add('linha');
 
@@ -156,12 +197,55 @@
 
               tabela.appendChild(linha);
             });
+        }
+
+        // Função para limpar filtros (global)
+        window.limparFiltros = function() {
+          document.getElementById('filtroNome').value = '';
+          document.getElementById('filtroCNH').value = '';
+          document.getElementById('filtroData').value = '';
+          window.filtrarUsuarios();
+        };
+
+        // Buscar dados da API
+        fetch('/api/usuarios')
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Erro ao buscar dados da API');
+            }
+            return res.json();
+          })
+          .then(dados => {
+            // Armazenar todos os usuários
+            window.todosUsuarios = dados.usuarios || [];
+            
+            // Exibir todos os usuários inicialmente
+            window.filtrarUsuarios();
           })
           .catch(erro => {
             console.error("Erro ao carregar dados:", erro);
             const tabela = document.getElementById('tabela');
             tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center; color: red;">Erro ao carregar dados. Verifique a conexão com o servidor.</div></div>';
           });
+
+        // Adicionar event listeners aos campos de filtro
+        document.addEventListener('DOMContentLoaded', function() {
+          const filtroNome = document.getElementById('filtroNome');
+          const filtroCNH = document.getElementById('filtroCNH');
+          const filtroData = document.getElementById('filtroData');
+
+          if (filtroNome) {
+            filtroNome.addEventListener('input', window.filtrarUsuarios);
+          }
+
+          if (filtroCNH) {
+            filtroCNH.addEventListener('input', window.filtrarUsuarios);
+          }
+
+          if (filtroData) {
+            filtroData.addEventListener('change', window.filtrarUsuarios);
+          }
+        });
       </script>
 
 
@@ -361,54 +445,11 @@
           return res.json();
         })
         .then(dados => {
-          const tabela = document.getElementById('tabela');
-          tabela.innerHTML = '';
-
-          if (!dados.usuarios || dados.usuarios.length === 0) {
-            tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhuma pessoa cadastrada</div></div>';
-            return;
-          }
-
-          dados.usuarios.forEach(usuario => {
-            const linha = document.createElement('div');
-            linha.classList.add('linha');
-
-            const cnh = usuario.cnh || 'N/A';
-            
-            // Determinar veículo ou designação
-            let veiculoDesignacao = '';
-            if (usuario.motorista) {
-              // Se for motorista, mostrar o carro designado (primeiro carro)
-              if (usuario.carros && usuario.carros.length > 0) {
-                const carro = usuario.carros[0];
-                veiculoDesignacao = `${carro.modelo} - ${carro.placa}`;
-              } else {
-                veiculoDesignacao = 'Sem veículo designado';
-              }
-            } else {
-              // Se não for motorista, mostrar que é funcionário
-              veiculoDesignacao = 'Funcionário';
-            }
-            
-            const dataFormatada = formatarData(usuario.criadoEm);
-
-            linha.innerHTML = `
-              <div class="coluna">${usuario.nome}</div>
-              <div class="coluna">${cnh}</div>
-              <div class="coluna">${veiculoDesignacao}</div>
-              <div class="coluna">${dataFormatada}</div>
-              <div class="coluna acoes-coluna">
-                <button class="btn-acao btn-editar" data-usuario-id="${usuario.id}" data-action="editar" title="Editar">
-                  <i class="fa-solid fa-pencil"></i>
-                </button>
-                <button class="btn-acao btn-excluir" data-usuario-id="${usuario.id}" data-usuario-nome="${usuario.nome.replace(/"/g, '&quot;')}" data-action="excluir" title="Excluir">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </div>
-            `;
-
-            tabela.appendChild(linha);
-          });
+          // Atualizar lista de todos os usuários
+          window.todosUsuarios = dados.usuarios || [];
+          
+          // Aplicar filtros novamente
+          window.filtrarUsuarios();
         })
         .catch(erro => {
           console.error("Erro ao carregar dados:", erro);
