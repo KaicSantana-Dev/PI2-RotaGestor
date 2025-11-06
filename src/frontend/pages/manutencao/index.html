@@ -28,17 +28,17 @@
     <header>
       <h1>Manutenções</h1>
 
-        <div class="account-header">
-          <div>
-            <i class="fa-solid fa-user"></i>
-              <span onclick="window.location.href='../../../../index.html'" >Sair</span>
-          </div>
-          <i class="fa-solid fa-gear"></i>
-          <i class="fa-solid fa-bell"></i>
+      <div class="account-header">
+        <div>
+          <i class="fa-solid fa-user"></i>
+          <span onclick="window.location.href='../../../../index.html'">Sair</span>
         </div>
-
+        <i class="fa-solid fa-gear"></i>
+        <i class="fa-solid fa-bell"></i>
       </div>
+
     </header>
+
     <section>
       <div class="filtro-container">
         <div class="filtro-item">
@@ -55,7 +55,7 @@
           <label>Serviços</label>
           <select>
             <option>Manutenção Geral</option>
-            <option>Manutenção Eletrica</option>
+            <option>Manutenção Elétrica</option>
           </select>
         </div>
 
@@ -74,50 +74,205 @@
           <button class="btn-sort">⇅</button>
         </div>
         <div class="filtro-item">
-        <button class="btn">
-          <img src="assets/document-icon.svg" alt="Documento" class="">
-          Cadastrar
-        </button>
+          <button class="btn" onclick="abrirModal()">
+            <img src="assets/document-icon.svg" alt="Documento">
+            Cadastrar
+          </button>
         </div>
       </div>
-
     </section>
+
     <section>
       <div class="tabela-container">
-        <div class="tabela-scroll" id="tabela">
+        <div class="tabela-scroll" id="tabela"></div>
+      </div>
+    </section>
 
+    <!-- === MODAL DE CADASTRO === -->
+    <div id="modalCadastro" class="modal hidden">
+      <div class="modal-content">
+        <h2>Cadastrar Manutenção</h2>
+        <label>Modelo</label>
+        <input id="modelo" type="text" placeholder="Ex: Sandero">
+
+        <label>Placa</label>
+        <input id="placa" type="text" placeholder="Ex: ABC-1234">
+
+        <label>Serviço</label>
+        <input id="servico" type="text" placeholder="Ex: Troca de óleo">
+
+        <label>Valor</label>
+        <input id="valor" type="number" placeholder="Ex: 350.00">
+
+        <label>Oficina</label>
+        <input id="oficina" type="text" placeholder="Ex: Mecânica do Tião">
+
+        <label>Hora</label>
+        <input id="hora" type="time">
+
+        <label>Data</label>
+        <input id="data" type="date">
+
+        <div class="modal-actions">
+          <button class="btn" onclick="salvarManutencao()">Salvar</button>
+          <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
         </div>
-    </section>
-    <section>
-      <script>
-        fetch('manutencao.json')
-          .then(res => res.json())
-          .then(dados => {
-            const tabela = document.getElementById('tabela');
+      </div>
+    </div>
 
-            dados.forEach(item => {
+    <!-- === SCRIPT === -->
+    <script>
+      const apiUrl = "/api/manutencoes";
 
-              const linha = document.createElement('div');
-              linha.classList.add('linha');
+      async function carregarTabela() {
+        const tabela = document.getElementById("tabela");
+        tabela.innerHTML = "";
+        const res = await fetch(apiUrl);
+        const dados = await res.json();
 
-              linha.innerHTML = `
-          <div class="coluna">${item.modelo}</div>
-          <div class="coluna">${item.placa}</div>
-          <div class="coluna">${item.servico}</div>
-          <div class="coluna">${item.valor}</div>
-          <div class="coluna">${item.oficina}</div>
-          <div class="coluna">${item.hora}</div>
-          <div class="coluna">${item.data}</div>
-        `;
+        dados.forEach(item => {
+          const linha = document.createElement("div");
+          linha.classList.add("linha");
+          linha.innerHTML = `
+            <div class="coluna">${item.modelo}</div>
+            <div class="coluna">${item.placa}</div>
+            <div class="coluna">${item.servico}</div>
+            <div class="coluna">R$ ${item.valor}</div>
+            <div class="coluna">${item.oficina}</div>
+            <div class="coluna">${item.hora}</div>
+            <div class="coluna">${new Date(item.data).toLocaleDateString()}</div>
+            <div class="coluna"><button onclick="removerManutencao('${item._id}')">🗑️</button></div>
+          `;
+          tabela.appendChild(linha);
+        });
+      }
 
-              tabela.appendChild(linha);
-            });
-          })
-          .catch(erro => console.error("Erro ao carregar o JSON:", erro));
-      </script>
+      async function salvarManutencao() {
+        const nova = {
+          modelo: document.getElementById("modelo").value,
+          placa: document.getElementById("placa").value,
+          servico: document.getElementById("servico").value,
+          valor: parseFloat(document.getElementById("valor").value),
+          oficina: document.getElementById("oficina").value,
+          hora: document.getElementById("hora").value,
+          data: document.getElementById("data").value
+        };
 
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nova)
+        });
 
-    </section>
+        if (res.ok) {
+          alert("Manutenção cadastrada!");
+          fecharModal();
+          carregarTabela();
+        } else {
+          alert("Erro ao cadastrar manutenção.");
+        }
+      }
+
+      async function removerManutencao(id) {
+        if (!confirm("Deseja remover esta manutenção?")) return;
+        const res = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          alert("Removida com sucesso!");
+          carregarTabela();
+        } else {
+          alert("Erro ao remover.");
+        }
+      }
+
+      function abrirModal() {
+        document.getElementById("modalCadastro").classList.remove("hidden");
+      }
+
+      function fecharModal() {
+        document.getElementById("modalCadastro").classList.add("hidden");
+      }
+
+      carregarTabela();
+    </script>
+
+    <style>
+      /* === ESTILOS DO MODAL === */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .modal-content {
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px;
+        width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 0.2s ease-in-out;
+      }
+
+      .modal-content h2 {
+        margin-bottom: 10px;
+        text-align: center;
+        color: #2e3a46;
+      }
+
+      .modal-content input {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 8px;
+        font-size: 0.9rem;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+      }
+
+      .btn-cancelar {
+        background: #ccc;
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+
+      .btn-cancelar:hover {
+        background: #bbb;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    </style>
+
   </main>
 </body>
 
