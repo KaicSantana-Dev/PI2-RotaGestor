@@ -25,49 +25,41 @@ if (process.env.NODE_ENV === "development") {
 }
 
 
-app.use(express.static("./src/frontend/pages/home/"));
-
-
-
-// Rota principal
-app.use("/", (req, res) => {
-  res.sendFile("index.html", { root: "./src/frontend/pages/home/" });
+// PÁGINA HOME
+app.use("/", express.static("./src/frontend/pages/home"));
+app.get("/", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/home" });
 });
 
-
-app.use(express.static("./src/frontend/pages/combustivel/"));
-// Rota principal
-app.use("/combustivel", (req, res) => {
-  res.sendFile("index.html", { root: "./src/frontend/pages/combustivel/" });
+// PÁGINA LOGIN
+app.use("/login", express.static("./src/frontend/pages/login"));
+app.get("/login", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/login" });
 });
 
-
-app.use(express.static("./src/frontend/pages/login/"));
-// Rota principal
-app.use("/login", (req, res) => {
-  res.sendFile("index.html", { root: "./src/frontend/pages/login/" });
+// PÁGINA COMBUSTÍVEL
+app.use("/combustivel", express.static("./src/frontend/pages/combustivel"));
+app.get("/combustivel", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/combustivel" });
 });
 
-
-app.use(express.static("./src/frontend/pages/manutencao/"));
-// Rota principal
-app.use("/manutencao", (req, res) => {
-  res.sendFile("index.html", { root: "./src/frontend/pages/manutencao/" });
+// PÁGINA MANUTENÇÃO
+app.use("/manutencao", express.static("./src/frontend/pages/manutencao"));
+app.get("/manutencao", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/manutencao" });
 });
 
-app.use(express.static("./src/frontend/pages/pessoas/"));
-// Rota principal
-app.use("/pessoas", (req, res) => {
-  res.sendFile("index.html", { root: "./src/frontend/pages/pessoas/" });
+// PÁGINA PESSOAS
+app.use("/pessoas", express.static("./src/frontend/pages/pessoas"));
+app.get("/pessoas", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/pessoas" });
 });
 
-
-app.use(express.static("./src/frontend/pages/veicheles/"));
-// Rota principal
-app.use("/veiculos", (req, res) => {
-  res.sendFile("index.html", { root: "./src/frontend/pages/veicheles/" });
+// PÁGINA VEÍCULOS
+app.use("/veiculos", express.static("./src/frontend/pages/veicheles"));
+app.get("/veiculos", (req, res) => {
+  res.sendFile("index.html", { root: "./src/frontend/pages/veicheles" });
 });
-
 
 app.use("/api/usuarios", usuarioRoutes)
 app.use("/api/carros", carroRoutes)
