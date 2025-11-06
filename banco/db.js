@@ -1,9 +1,7 @@
-import { PrismaClient  } from '../generated/prisma/index.js';
-const prisma = new PrismaClient()
+import { Sequelize } from "sequelize"
 
-async function getVeiculos() {
-    const user = await prisma.veiculos.findMany()
-    console.log(user)
-}
-
-getVeiculos()
+export const sequelize = new Sequelize("rotagestor", "postgres", "132331", {
+  host: "localhost",
+  dialect: "postgres",
+  logging: false,
+})

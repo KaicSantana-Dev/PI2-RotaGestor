@@ -1,39 +1,27 @@
 import express from "express"
-import Manutencao from "../models/Manutencao.js"
+import {
+  listarManutencoes,
+  criarManutencao,
+  buscarManutencaoPorId,
+  atualizarManutencao,
+  deletarManutencao
+} from "../controllers/manutencaoController.js"
 
 const router = express.Router()
 
 // GET - listar todas as manutenções
-router.get("/", async (req, res) => {
-  try {
-    const manutencoes = await Manutencao.find()
-    res.json(manutencoes)
-  } catch (erro) {
-    res.status(500).json({ erro: "Erro ao buscar manutenções" })
-  }
-})
+router.get("/", listarManutencoes)
+
+// GET - buscar manutenção por ID
+router.get("/:id", buscarManutencaoPorId)
 
 // POST - cadastrar nova manutenção
-router.post("/", async (req, res) => {
-  try {
-    const novaManutencao = new Manutencao(req.body)
-    await novaManutencao.save()
-    res.status(201).json(novaManutencao)
-  } catch (erro) {
-    res.status(400).json({ erro: "Erro ao cadastrar manutenção" })
-  }
-})
+router.post("/", criarManutencao)
+
+// PUT - atualizar manutenção
+router.put("/:id", atualizarManutencao)
 
 // DELETE - remover manutenção por ID
-router.delete("/:id", async (req, res) => {
-  try {
-    const { id } = req.params
-    const removida = await Manutencao.findByIdAndDelete(id)
-    if (!removida) return res.status(404).json({ erro: "Manutenção não encontrada" })
-    res.json({ mensagem: "Removida com sucesso!" })
-  } catch (erro) {
-    res.status(400).json({ erro: "Erro ao remover manutenção" })
-  }
-})
+router.delete("/:id", deletarManutencao)
 
 export default router
