@@ -11,7 +11,7 @@
     "start": "ts-node-esm index.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.18.0",
+    "@prisma/client": "^6.19.0",
     "@tailwindcss/vite": "^4.1.12",
     "cors": "^2.8.5",
     "express": "^5.1.0",
@@ -30,7 +30,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
-    "prisma": "^6.18.0",
+    "prisma": "^6.19.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
