@@ -54,13 +54,17 @@ model GastosCombustivel {
 }
 
 model GastosManutencao {
-  id       Int      @id @default(autoincrement())
-  carroId  Int
-  carro    Carro    @relation(fields: [carroId], references: [id], onDelete: Cascade)
-  valor    Decimal  @db.Decimal(10, 2)
-  local    String
-  data     DateTime @default(now())
-  criadoEm DateTime @default(now())
+  id        Int         @id @default(autoincrement())
+  carroId   Int
+  carro     Carro       @relation(fields: [carroId], references: [id], onDelete: Cascade)
+  servico   String       
+  valor     Decimal      @db.Decimal(10, 2)
+  local     String
+  hora      String       
+  data      DateTime     @default(now())
+  criadoEm  DateTime     @default(now())
 
   @@map("gastos_manutencao")
 }
+
+
