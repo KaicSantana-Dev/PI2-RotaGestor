@@ -34,9 +34,18 @@ export const criarUsuario = async (req, res) => {
     })
   } catch (erro) {
     console.error("Erro ao criar usuário:", erro)
+    console.error("Stack trace:", erro.stack)
+    console.error("Dados recebidos:", req.body)
+    
+    // Verificar se é erro do Prisma
+    if (erro.code) {
+      console.error("Código do erro:", erro.code)
+    }
+    
     res.status(500).json({
       erro: "Erro ao criar usuário",
       detalhes: erro.message,
+      codigo: erro.code || null,
     })
   }
 }
@@ -125,14 +134,35 @@ export const atualizarUsuario = async (req, res) => {
       })
     }
 
+    // Preparar dados para atualização
+    const dadosAtualizacao = {}
+    
+    if (nome) {
+      dadosAtualizacao.nome = nome
+    }
+    
+    if (senha) {
+      dadosAtualizacao.senha = senha
+    }
+    
+    if (motorista !== undefined) {
+      dadosAtualizacao.motorista = motorista
+      
+      // Se está mudando para não motorista, remover CNH
+      if (!motorista) {
+        dadosAtualizacao.cnh = null
+      } else if (cnh) {
+        // Se está mudando para motorista e tem CNH, atualizar
+        dadosAtualizacao.cnh = cnh
+      }
+    } else if (cnh) {
+      // Se não está mudando o status de motorista mas tem CNH, atualizar
+      dadosAtualizacao.cnh = cnh
+    }
+
     const usuario = await prisma.usuario.update({
       where: { id: Number.parseInt(id) },
-      data: {
-        ...(nome && { nome }),
-        ...(senha && { senha }),
-        ...(motorista !== undefined && { motorista }),
-        ...(cnh && { cnh }),
-      },
+      data: dadosAtualizacao,
     })
 
     res.json({

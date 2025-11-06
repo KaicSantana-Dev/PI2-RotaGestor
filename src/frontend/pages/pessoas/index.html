@@ -1,297 +1,746 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RotaGestor - Pessoas</title>
-    <link rel="stylesheet" href="./styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-    <link rel="icon" href="../../../../public/assets/logo/Icon.svg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RotaGestor - Pesoas</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="icon" href="../../../../public/assets/logo/Icon.svg">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-    <nav>
-        <div class="logo">
-            <img src="assets/Logo.svg">
-        </div>
-        <div class="navbar">
-            <a href="/"><i class="icon fa-solid fa-house"></i>Início</a>
-            <a href="/combustivel"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
-            <a href="/manutencao"><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
-            <a href="/veiculos"><i class="icon fa-solid fa-car"></i> Veículos</a>
-            <a href="#"><i class="icon fa-solid fa-user"></i>Pessoas</a>
-        </div>
-    </nav>
 
-    <main>
-        <header>
-            <h1>Pessoas</h1>
-            <div class="header-buttons">
-                <div class="account-header">
-                    <div>
-                        <i class="fa-solid fa-user"></i>
-                        <span onclick="window.location.href='../../../../index.html'" >Sair</span>
-                    </div>
-                    <i class="fa-solid fa-gear"></i>
-                    <i class="fa-solid fa-bell"></i>
+<body p-0 m-0 >
+  <nav>
+    <div class="logo">
+      <img src="assets/Logo.svg">
+    </div>
+    <div class="navbar">
+      <a href="/"><i class="icon fa-solid fa-house"></i>Início</a>
+      <a href="/combustivel"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
+      <a href="/manutencao"><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
+      <a href="/veiculos"><i class="icon fa-solid fa-car"></i> Veículos</a>
+      <a href="#"><i class="icon fa-solid fa-user"></i>Pessoas</a>
+    </div>
+  </nav>
+
+  <main>
+    <header>
+      <h1>Gestao de Pessoas</h1>
+
+        <div class="account-header">
+          <div>
+            <i class="fa-solid fa-user"></i>
+              <span onclick="window.location.href='../../../../index.html'" >Sair</span>
+          </div>
+          <i class="fa-solid fa-gear"></i>
+          <i class="fa-solid fa-bell"></i>
+        </div>
+
+      </div>
+    </header>
+    <section>
+      <div class="filtro-container">
+        <div class="filtro-item">
+          <label>Nome</label>
+          <input type="text" placeholder="Paulo">
+        </div>
+
+        <div class="filtro-item">
+          <label>CNH</label>
+          <input type="text" placeholder="XXXXXXXXX-X">
+        </div>
+
+        <div class="filtro-item">
+          <label>Data</label>
+          <input type="date">
+        </div>
+
+        <div class="filtro-item">
+        <button class="btn" id="btnCadastrar" onclick="abrirModal()">
+          <img src="assets/document-icon.svg" alt="Documento" class="">
+          Cadastrar
+        </button>
+        </div>
+      </div>
+
+    </section>
+    <section>
+      <div class="tabela-container">
+        <div class="tabela-scroll">
+          <div class="linha" style="background-color: #52b69a; color: white; font-weight: 600; margin-bottom: 15px;">
+            <div class="coluna">Nome</div>
+            <div class="coluna">CNH</div>
+            <div class="coluna">Veículo / Designação</div>
+            <div class="coluna">Data de Cadastro</div>
+            <div class="coluna">Ações</div>
+          </div>
+          <div id="tabela">
+
+          </div>
+        </div>
+    </section>
+    <section>
+      <script>
+        // Função para formatar data
+        function formatarData(dataString) {
+          const data = new Date(dataString);
+          return data.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+        }
+
+        // Buscar dados da API
+        fetch('/api/usuarios')
+          .then(res => {
+            if (!res.ok) {
+              throw new Error('Erro ao buscar dados da API');
+            }
+            return res.json();
+          })
+          .then(dados => {
+            const tabela = document.getElementById('tabela');
+
+            // Limpar tabela antes de adicionar novos dados
+            tabela.innerHTML = '';
+
+            // Verificar se há usuários
+            if (!dados.usuarios || dados.usuarios.length === 0) {
+              tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhuma pessoa cadastrada</div></div>';
+              return;
+            }
+
+            // Iterar sobre os usuários
+            dados.usuarios.forEach(usuario => {
+              const linha = document.createElement('div');
+              linha.classList.add('linha');
+
+              // Formatar CNH (pode ser null)
+              const cnh = usuario.cnh || 'N/A';
+              
+              // Determinar veículo ou designação
+              let veiculoDesignacao = '';
+              if (usuario.motorista) {
+                // Se for motorista, mostrar o carro designado (primeiro carro)
+                if (usuario.carros && usuario.carros.length > 0) {
+                  const carro = usuario.carros[0];
+                  veiculoDesignacao = `${carro.modelo} - ${carro.placa}`;
+                } else {
+                  veiculoDesignacao = 'Sem veículo designado';
+                }
+              } else {
+                // Se não for motorista, mostrar que é funcionário
+                veiculoDesignacao = 'Funcionário';
+              }
+              
+              // Formatar data
+              const dataFormatada = formatarData(usuario.criadoEm);
+
+              linha.innerHTML = `
+                <div class="coluna">${usuario.nome}</div>
+                <div class="coluna">${cnh}</div>
+                <div class="coluna">${veiculoDesignacao}</div>
+                <div class="coluna">${dataFormatada}</div>
+                <div class="coluna acoes-coluna">
+                  <button class="btn-acao btn-editar" data-usuario-id="${usuario.id}" data-action="editar" title="Editar">
+                    <i class="fa-solid fa-pencil"></i>
+                  </button>
+                  <button class="btn-acao btn-excluir" data-usuario-id="${usuario.id}" data-usuario-nome="${usuario.nome.replace(/"/g, '&quot;')}" data-action="excluir" title="Excluir">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
                 </div>
-                
-            </div>
-        </header>
-        <section>
-          <div class="filtro-container">
-            <div class="filtro-item">
-              <label>Modelo</label>
-              <input type="text" placeholder="Sandero">
-            </div>
+              `;
 
-            <div class="filtro-item">
-              <label>Placa</label>
-              <input type="text" placeholder="AB4C-4D5H">
-            </div>
+              tabela.appendChild(linha);
+            });
+          })
+          .catch(erro => {
+            console.error("Erro ao carregar dados:", erro);
+            const tabela = document.getElementById('tabela');
+            tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center; color: red;">Erro ao carregar dados. Verifique a conexão com o servidor.</div></div>';
+          });
+      </script>
 
-            <div class="filtro-item">
-              <label>Serviços</label>
-              <select>
-                <option>Manutenção Geral</option>
-                <option>Manutenção Eletrica</option>
-              </select>
-            </div>
 
-            <div class="filtro-item">
-              <label>Valor</label>
-              <input type="text" placeholder="R$">
-            </div>
+    </section>
+  </main>
 
-            <div class="filtro-item">
-              <label>Local</label>
-              <input type="text" placeholder="Endereço">
-            </div>
+  <!-- Modal de Confirmação de Exclusão -->
+  <div id="modalExcluir" class="modal-overlay hidden">
+    <div class="modal-container" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2>Confirmar Exclusão</h2>
+        <button class="modal-close" onclick="fecharModalExcluir()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-form">
+        <p style="font-size: 16px; color: var(--text-color); margin-bottom: 20px;">
+          Tem certeza que deseja excluir <strong id="nomeUsuarioExcluir"></strong>?
+        </p>
+        <p style="font-size: 14px; color: #e74c3c; margin-bottom: 25px;">
+          <i class="fa-solid fa-exclamation-triangle"></i>
+          Esta ação não pode ser desfeita.
+        </p>
 
-            <div class="filtro-item">
-              <label>Data</label>
-              <input type="date">
-            </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancelar" onclick="fecharModalExcluir()">
+            <i class="fa-solid fa-times"></i>
+            Cancelar
+          </button>
+          <button type="button" class="btn-excluir-confirmar" onclick="confirmarExclusao()">
+            <i class="fa-solid fa-trash"></i>
+            Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            <div class="filtro-item">
-              <label>Ordenar</label>
-              <select>
-                <option>Data de Criação</option>
-                <option>Valor</option>
-              </select>
-            </div>
+  <!-- Modal de Edição -->
+  <div id="modalEditar" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>Editar Pessoa</h2>
+        <button class="modal-close" onclick="fecharModalEditar()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="formEditar" class="modal-form">
+        <input type="hidden" id="idUsuarioEditar">
+        
+        <div class="form-group">
+          <label for="nomeEditar">
+            <i class="fa-solid fa-user"></i>
+            Nome *
+          </label>
+          <input type="text" id="nomeEditar" name="nome" placeholder="Ex: João Silva" required>
+        </div>
 
-            <button class="btn-sort">⇅</button>
-            <button class="btn-cadastrar">Cadastrar</button>
-          </div>
+        <div class="form-group">
+          <label for="senhaEditar">
+            <i class="fa-solid fa-lock"></i>
+            Nova Senha
+          </label>
+          <input type="password" id="senhaEditar" name="senha" placeholder="Deixe em branco para não alterar">
+        </div>
 
-        </section>
-        <section>
-          <div class="tabela-container">
-            <div class="tabela-scroll">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="motoristaEditar" name="motorista" onchange="toggleCNHEditar()">
+            <span>É motorista?</span>
+          </label>
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="form-group" id="cnhGroupEditar" style="display: none;">
+          <label for="cnhEditar">
+            <i class="fa-solid fa-id-card"></i>
+            CNH *
+          </label>
+          <input type="text" id="cnhEditar" name="cnh" placeholder="XXXXXXXXX-X" maxlength="12">
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancelar" onclick="fecharModalEditar()">
+            <i class="fa-solid fa-times"></i>
+            Cancelar
+          </button>
+          <button type="submit" class="btn-salvar">
+            <i class="fa-solid fa-check"></i>
+            Salvar Alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+  <!-- Modal de Cadastro -->
+  <div id="modalCadastro" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>Cadastrar Nova Pessoa</h2>
+        <button class="modal-close" onclick="fecharModal()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="formCadastro" class="modal-form">
+        <div class="form-group">
+          <label for="nome">
+            <i class="fa-solid fa-user"></i>
+            Nome *
+          </label>
+          <input type="text" id="nome" name="nome" placeholder="Ex: João Silva" required>
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="form-group">
+          <label for="senha">
+            <i class="fa-solid fa-lock"></i>
+            Senha *
+          </label>
+          <input type="password" id="senha" name="senha" placeholder="Digite uma senha" required>
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="motorista" name="motorista" onchange="toggleCNH()">
+            <span>É motorista?</span>
+          </label>
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-                      <div class="tabela-container">
-              <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
+        <div class="form-group" id="cnhGroup" style="display: none;">
+          <label for="cnh">
+            <i class="fa-solid fa-id-card"></i>
+            CNH *
+          </label>
+          <input type="text" id="cnh" name="cnh" placeholder="XXXXXXXXX-X" maxlength="12">
+        </div>
 
-            <div class="linha">
-              <div class="coluna">Fiat Palio</div>
-              <div class="coluna">AB4C-4D5h</div>
-              <div class="coluna">Manutenção Elétrica</div>
-              <div class="coluna">R$ 995,15</div>
-              <div class="coluna">Mecânica do Tião</div>
-              <div class="coluna">19:00:51</div>
-              <div class="coluna">29/03/1999</div>
-            </div>
-          </div>
-        </section>
-    </main>
-  </body>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancelar" onclick="fecharModal()">
+            <i class="fa-solid fa-times"></i>
+            Cancelar
+          </button>
+          <button type="submit" class="btn-salvar">
+            <i class="fa-solid fa-check"></i>
+            Cadastrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Funções do Modal
+    function abrirModal() {
+      document.getElementById('modalCadastro').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModal() {
+      document.getElementById('modalCadastro').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      document.getElementById('formCadastro').reset();
+      document.getElementById('cnhGroup').style.display = 'none';
+    }
+
+    function toggleCNH() {
+      const motorista = document.getElementById('motorista').checked;
+      const cnhGroup = document.getElementById('cnhGroup');
+      const cnhInput = document.getElementById('cnh');
+      
+      if (motorista) {
+        cnhGroup.style.display = 'block';
+        cnhInput.required = true;
+      } else {
+        cnhGroup.style.display = 'none';
+        cnhInput.required = false;
+        cnhInput.value = '';
+      }
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modalCadastro').addEventListener('click', function(e) {
+      if (e.target === this) {
+        fecharModal();
+      }
+    });
+
+    // Função para recarregar dados da tabela
+    function recarregarTabela() {
+      fetch('/api/usuarios')
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('Erro ao buscar dados da API');
+          }
+          return res.json();
+        })
+        .then(dados => {
+          const tabela = document.getElementById('tabela');
+          tabela.innerHTML = '';
+
+          if (!dados.usuarios || dados.usuarios.length === 0) {
+            tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhuma pessoa cadastrada</div></div>';
+            return;
+          }
+
+          dados.usuarios.forEach(usuario => {
+            const linha = document.createElement('div');
+            linha.classList.add('linha');
+
+            const cnh = usuario.cnh || 'N/A';
+            
+            // Determinar veículo ou designação
+            let veiculoDesignacao = '';
+            if (usuario.motorista) {
+              // Se for motorista, mostrar o carro designado (primeiro carro)
+              if (usuario.carros && usuario.carros.length > 0) {
+                const carro = usuario.carros[0];
+                veiculoDesignacao = `${carro.modelo} - ${carro.placa}`;
+              } else {
+                veiculoDesignacao = 'Sem veículo designado';
+              }
+            } else {
+              // Se não for motorista, mostrar que é funcionário
+              veiculoDesignacao = 'Funcionário';
+            }
+            
+            const dataFormatada = formatarData(usuario.criadoEm);
+
+            linha.innerHTML = `
+              <div class="coluna">${usuario.nome}</div>
+              <div class="coluna">${cnh}</div>
+              <div class="coluna">${veiculoDesignacao}</div>
+              <div class="coluna">${dataFormatada}</div>
+              <div class="coluna acoes-coluna">
+                <button class="btn-acao btn-editar" data-usuario-id="${usuario.id}" data-action="editar" title="Editar">
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
+                <button class="btn-acao btn-excluir" data-usuario-id="${usuario.id}" data-usuario-nome="${usuario.nome.replace(/"/g, '&quot;')}" data-action="excluir" title="Excluir">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            `;
+
+            tabela.appendChild(linha);
+          });
+        })
+        .catch(erro => {
+          console.error("Erro ao carregar dados:", erro);
+        });
+    }
+
+    // Variáveis globais para exclusão
+    window.usuarioIdParaExcluir = null;
+
+    // Funções do Modal de Exclusão (expostas globalmente)
+    window.abrirModalExcluir = function(id, nome) {
+      console.log('=== Abrindo modal de exclusão ===');
+      console.log('ID:', id);
+      console.log('Nome:', nome);
+      
+      window.usuarioIdParaExcluir = id;
+      const nomeElement = document.getElementById('nomeUsuarioExcluir');
+      const modalElement = document.getElementById('modalExcluir');
+      
+      console.log('Nome element:', nomeElement);
+      console.log('Modal element:', modalElement);
+      
+      if (!nomeElement) {
+        console.error('Elemento nomeUsuarioExcluir não encontrado');
+        alert('Erro: Elemento do modal não encontrado. Recarregue a página.');
+        return;
+      }
+      
+      if (!modalElement) {
+        console.error('Elemento modalExcluir não encontrado');
+        alert('Erro: Modal não encontrado. Recarregue a página.');
+        return;
+      }
+      
+      nomeElement.textContent = nome;
+      modalElement.classList.remove('hidden');
+      modalElement.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      
+      console.log('Modal aberto com sucesso');
+    };
+
+    window.fecharModalExcluir = function() {
+      console.log('Fechando modal de exclusão');
+      const modalElement = document.getElementById('modalExcluir');
+      if (modalElement) {
+        modalElement.classList.add('hidden');
+        modalElement.style.display = 'none';
+      }
+      document.body.style.overflow = 'auto';
+      window.usuarioIdParaExcluir = null;
+    };
+
+    window.confirmarExclusao = async function() {
+      if (!window.usuarioIdParaExcluir) {
+        console.error('ID do usuário não encontrado');
+        return;
+      }
+
+      try {
+        console.log('Excluindo usuário:', window.usuarioIdParaExcluir);
+        const response = await fetch(`/api/usuarios/${window.usuarioIdParaExcluir}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) {
+          const erro = await response.json();
+          let mensagemErro = erro.erro || 'Erro ao excluir pessoa';
+          
+          if (erro.detalhes) {
+            mensagemErro += ': ' + erro.detalhes;
+          }
+          
+          throw new Error(mensagemErro);
+        }
+
+        window.fecharModalExcluir();
+        recarregarTabela();
+        alert('Pessoa excluída com sucesso!');
+      } catch (erro) {
+        console.error('Erro ao excluir:', erro);
+        alert('Erro ao excluir pessoa: ' + erro.message);
+      }
+    };
+
+    // Event delegation para botões de ação (editar e excluir)
+    // Usar o container da tabela para garantir que funcione com elementos dinâmicos
+    const tabelaContainer = document.getElementById('tabela');
+    
+    function setupEventDelegation() {
+      // Remover listener anterior se existir
+      if (window.tabelaClickHandler) {
+        document.removeEventListener('click', window.tabelaClickHandler);
+      }
+      
+      // Criar novo handler
+      window.tabelaClickHandler = function(e) {
+        // Verificar se o clique foi no botão ou no ícone dentro dele
+        let btn = e.target.closest('.btn-acao');
+        
+        // Se clicou no ícone, pegar o botão pai
+        if (!btn && e.target.tagName === 'I' && e.target.parentElement && e.target.parentElement.classList.contains('btn-acao')) {
+          btn = e.target.parentElement;
+        }
+        
+        if (!btn) return;
+
+        const action = btn.getAttribute('data-action');
+        const usuarioId = btn.getAttribute('data-usuario-id');
+
+        console.log('Botão clicado:', { action, usuarioId, btn });
+
+        if (action === 'excluir') {
+          e.preventDefault();
+          e.stopPropagation();
+          const usuarioNome = btn.getAttribute('data-usuario-nome');
+          if (usuarioId && usuarioNome) {
+            console.log('Botão excluir clicado:', usuarioId, usuarioNome);
+            window.abrirModalExcluir(parseInt(usuarioId), usuarioNome);
+          } else {
+            console.error('Dados do botão não encontrados:', { usuarioId, usuarioNome });
+          }
+        } else if (action === 'editar') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (usuarioId) {
+            abrirModalEditar(parseInt(usuarioId));
+          }
+        }
+      };
+      
+      // Adicionar listener ao documento
+      document.addEventListener('click', window.tabelaClickHandler);
+    }
+    
+    // Configurar event delegation quando o DOM estiver pronto
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupEventDelegation);
+    } else {
+      setupEventDelegation();
+    }
+
+    // Fechar modal de exclusão ao clicar fora
+    (function() {
+      function setupModalExcluir() {
+        const modalExcluir = document.getElementById('modalExcluir');
+        if (modalExcluir) {
+          modalExcluir.addEventListener('click', function(e) {
+            if (e.target === this) {
+              window.fecharModalExcluir();
+            }
+          });
+        }
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupModalExcluir);
+      } else {
+        setupModalExcluir();
+      }
+    })();
+
+    // Funções do Modal de Edição
+    async function abrirModalEditar(id) {
+      try {
+        const response = await fetch(`/api/usuarios/${id}`);
+        
+        if (!response.ok) {
+          throw new Error('Erro ao carregar dados do usuário');
+        }
+
+        const dados = await response.json();
+        const usuario = dados.usuario;
+
+        // Preencher formulário
+        document.getElementById('idUsuarioEditar').value = usuario.id;
+        document.getElementById('nomeEditar').value = usuario.nome;
+        document.getElementById('senhaEditar').value = '';
+        document.getElementById('motoristaEditar').checked = usuario.motorista;
+        document.getElementById('cnhEditar').value = usuario.cnh || '';
+
+        // Mostrar/ocultar campo CNH
+        toggleCNHEditar();
+
+        // Abrir modal
+        document.getElementById('modalEditar').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      } catch (erro) {
+        console.error('Erro ao carregar usuário:', erro);
+        alert('Erro ao carregar dados do usuário: ' + erro.message);
+      }
+    }
+
+    function fecharModalEditar() {
+      document.getElementById('modalEditar').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      document.getElementById('formEditar').reset();
+      document.getElementById('cnhGroupEditar').style.display = 'none';
+    }
+
+    function toggleCNHEditar() {
+      const motorista = document.getElementById('motoristaEditar').checked;
+      const cnhGroup = document.getElementById('cnhGroupEditar');
+      const cnhInput = document.getElementById('cnhEditar');
+      
+      if (motorista) {
+        cnhGroup.style.display = 'block';
+        cnhInput.required = true;
+      } else {
+        cnhGroup.style.display = 'none';
+        cnhInput.required = false;
+        cnhInput.value = '';
+      }
+    }
+
+    // Fechar modal de edição ao clicar fora
+    document.getElementById('modalEditar').addEventListener('click', function(e) {
+      if (e.target === this) {
+        fecharModalEditar();
+      }
+    });
+
+    // Submissão do formulário de edição
+    document.getElementById('formEditar').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const id = document.getElementById('idUsuarioEditar').value;
+      const nome = document.getElementById('nomeEditar').value;
+      const senha = document.getElementById('senhaEditar').value;
+      const motorista = document.getElementById('motoristaEditar').checked;
+      const cnh = document.getElementById('cnhEditar').value;
+
+      const dados = {
+        nome,
+        motorista,
+        cnh: motorista ? cnh : null
+      };
+
+      // Só incluir senha se foi preenchida
+      if (senha) {
+        dados.senha = senha;
+      }
+
+      try {
+        const response = await fetch(`/api/usuarios/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dados)
+        });
+
+        if (!response.ok) {
+          const erro = await response.json();
+          let mensagemErro = erro.erro || 'Erro ao atualizar pessoa';
+          
+          if (erro.detalhes) {
+            mensagemErro += ': ' + erro.detalhes;
+          }
+          
+          throw new Error(mensagemErro);
+        }
+
+        const resultado = await response.json();
+        
+        // Fechar modal e recarregar tabela
+        fecharModalEditar();
+        recarregarTabela();
+        
+        // Mostrar mensagem de sucesso
+        alert('Pessoa atualizada com sucesso!');
+      } catch (erro) {
+        console.error('Erro ao atualizar:', erro);
+        alert('Erro ao atualizar pessoa: ' + erro.message);
+      }
+    });
+
+    // Submissão do formulário
+    document.getElementById('formCadastro').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const nome = document.getElementById('nome').value;
+      const senha = document.getElementById('senha').value;
+      const motorista = document.getElementById('motorista').checked;
+      const cnh = document.getElementById('cnh').value;
+
+      const dados = {
+        nome,
+        senha,
+        motorista,
+        cnh: motorista ? cnh : null
+      };
+
+      try {
+        const response = await fetch('/api/usuarios', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(dados)
+        });
+
+        if (!response.ok) {
+          const erro = await response.json();
+          let mensagemErro = erro.erro || 'Erro ao cadastrar pessoa';
+          
+          if (erro.detalhes) {
+            mensagemErro += ': ' + erro.detalhes;
+          }
+          
+          if (erro.codigo) {
+            mensagemErro += ' (Código: ' + erro.codigo + ')';
+          }
+          
+          throw new Error(mensagemErro);
+        }
+
+        const resultado = await response.json();
+        
+        // Fechar modal e recarregar tabela
+        fecharModal();
+        recarregarTabela();
+        
+        // Mostrar mensagem de sucesso
+        alert('Pessoa cadastrada com sucesso!');
+      } catch (erro) {
+        console.error('Erro ao cadastrar:', erro);
+        console.error('Detalhes do erro:', erro);
+        alert('Erro ao cadastrar pessoa: ' + erro.message);
+      }
+    });
+  </script>
+</body>
+
 </html>
