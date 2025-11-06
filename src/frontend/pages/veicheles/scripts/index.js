@@ -71,23 +71,61 @@ function converterImagemParaBase64(file) {
 }
 
 function converterImagemBuffer(imagemBuffer) {
-  if (!imagemBuffer || !imagemBuffer.data) {
+  // Se não há imagem, retorna placeholder
+  if (!imagemBuffer) {
     return "https://via.placeholder.com/400x250?text=Sem+Imagem"
   }
 
-  // Se já é uma string base64 ou URL
+  // Se já é uma string base64 ou URL completa
   if (typeof imagemBuffer === "string") {
-    return imagemBuffer
+    // Se já tem o prefixo data:image, retorna direto
+    if (imagemBuffer.startsWith("data:image")) {
+      return imagemBuffer
+    }
+    // Se é uma URL http/https, retorna direto
+    if (imagemBuffer.startsWith("http")) {
+      return imagemBuffer
+    }
+    // Se é base64 puro, adiciona o prefixo
+    return `data:image/jpeg;base64,${imagemBuffer}`
   }
 
-  // Converte array de bytes para base64
-  const bytes = new Uint8Array(imagemBuffer.data)
-  let binary = ""
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i])
+  // Quando o Prisma retorna Bytes, vem como {type: "Buffer", data: [array]}
+  if (imagemBuffer.type === "Buffer" && Array.isArray(imagemBuffer.data)) {
+    try {
+      // Converte array de bytes para string base64
+      const uint8Array = new Uint8Array(imagemBuffer.data)
+      let binary = ""
+      for (let i = 0; i < uint8Array.length; i++) {
+        binary += String.fromCharCode(uint8Array[i])
+      }
+      const base64 = btoa(binary)
+      return `data:image/jpeg;base64,${base64}`
+    } catch (error) {
+      console.error("Erro ao converter buffer de imagem:", error)
+      return "https://via.placeholder.com/400x250?text=Erro+ao+Carregar"
+    }
   }
-  const base64 = btoa(binary)
-  return `data:image/jpeg;base64,${base64}`
+
+  // Fallback para formato antigo (se imagemBuffer.data existir diretamente)
+  if (imagemBuffer.data && Array.isArray(imagemBuffer.data)) {
+    try {
+      const uint8Array = new Uint8Array(imagemBuffer.data)
+      let binary = ""
+      for (let i = 0; i < uint8Array.length; i++) {
+        binary += String.fromCharCode(uint8Array[i])
+      }
+      const base64 = btoa(binary)
+      return `data:image/jpeg;base64,${base64}`
+    } catch (error) {
+      console.error("Erro ao converter buffer de imagem:", error)
+      return "https://via.placeholder.com/400x250?text=Erro+ao+Carregar"
+    }
+  }
+
+  // Se nenhum formato conhecido, retorna placeholder
+  console.warn("Formato de imagem desconhecido:", imagemBuffer)
+  return "https://via.placeholder.com/400x250?text=Formato+Inválido"
 }
 
 function transformarVeiculoAPI(carroAPI) {
@@ -367,11 +405,11 @@ async function cadastrarVeiculo() {
                 
                 .form-header {
                     display: flex;
-                 </input>   align-items: center;
+                    align-items: center;
                     gap: 12px;
                     margin-bottom: 30px;
-  </input>                  padding-bottom: 20px;
-                    border-bottom: 2px solid </input>#e2e8f0;
+                    padding-bottom: 20px;
+                    border-bottom: 2px solid #e2e8f0;
                 }
                 
                 .form-header-icon {
