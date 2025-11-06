@@ -683,6 +683,18 @@ body {
 .btn-excluir-confirmar {
   background: #e74c3c;
   color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+  font-family: "Open Sans", sans-serif;
 }
 
 .btn-excluir-confirmar:hover {

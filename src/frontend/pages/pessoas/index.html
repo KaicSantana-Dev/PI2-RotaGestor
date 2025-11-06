@@ -474,13 +474,11 @@
       
       if (!nomeElement) {
         console.error('Elemento nomeUsuarioExcluir não encontrado');
-        alert('Erro: Elemento do modal não encontrado. Recarregue a página.');
         return;
       }
       
       if (!modalElement) {
         console.error('Elemento modalExcluir não encontrado');
-        alert('Erro: Modal não encontrado. Recarregue a página.');
         return;
       }
       
@@ -528,10 +526,8 @@
 
         window.fecharModalExcluir();
         recarregarTabela();
-        alert('Pessoa excluída com sucesso!');
       } catch (erro) {
         console.error('Erro ao excluir:', erro);
-        alert('Erro ao excluir pessoa: ' + erro.message);
       }
     };
 
@@ -639,7 +635,6 @@
         document.body.style.overflow = 'hidden';
       } catch (erro) {
         console.error('Erro ao carregar usuário:', erro);
-        alert('Erro ao carregar dados do usuário: ' + erro.message);
       }
     }
 
@@ -720,10 +715,8 @@
         recarregarTabela();
         
         // Mostrar mensagem de sucesso
-        alert('Pessoa atualizada com sucesso!');
       } catch (erro) {
         console.error('Erro ao atualizar:', erro);
-        alert('Erro ao atualizar pessoa: ' + erro.message);
       }
     });
 
@@ -774,11 +767,9 @@
         recarregarTabela();
         
         // Mostrar mensagem de sucesso
-        alert('Pessoa cadastrada com sucesso!');
       } catch (erro) {
         console.error('Erro ao cadastrar:', erro);
         console.error('Detalhes do erro:', erro);
-        alert('Erro ao cadastrar pessoa: ' + erro.message);
       }
     });
   </script>
