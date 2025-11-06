@@ -1,30 +1,36 @@
-import Manutencao from "../models/manutencaoModel.js"
-import { sequelize } from "../../banco/db.js"
+import pool from "../../banco/db-manutencao.js"
 
 // Listar todas as manutenções
 export const listarManutencoes = async (req, res) => {
   try {
-    // Garantir que a tabela existe
-    await Manutencao.sync({ alter: true })
+    const query = `
+      SELECT 
+        id,
+        modelo,
+        placa,
+        servico,
+        valor,
+        oficina,
+        hora,
+        data
+      FROM manutencoes
+      ORDER BY data DESC
+    `
     
-    // Usar raw: true para evitar problemas de serialização
-    const manutencoes = await Manutencao.findAll({
-      order: [['data', 'DESC']],
-      raw: true
-    })
+    const result = await pool.query(query)
     
     // Se não houver dados, retornar array vazio
-    if (!manutencoes || manutencoes.length === 0) {
+    if (!result.rows || result.rows.length === 0) {
       return res.json([])
     }
     
     // Converter dados para formato seguro
-    const manutencoesJson = manutencoes.map(manutencao => ({
+    const manutencoesJson = result.rows.map(manutencao => ({
       id: manutencao.id,
       modelo: manutencao.modelo || '',
       placa: manutencao.placa || '',
       servico: manutencao.servico || '',
-      valor: manutencao.valor || 0,
+      valor: parseFloat(manutencao.valor) || 0,
       oficina: manutencao.oficina || '',
       hora: manutencao.hora || '',
       data: manutencao.data ? (typeof manutencao.data === 'string' ? manutencao.data : manutencao.data.toISOString().split('T')[0]) : ''
@@ -34,11 +40,6 @@ export const listarManutencoes = async (req, res) => {
   } catch (erro) {
     console.error("Erro ao buscar manutenções:", erro)
     console.error("Stack trace:", erro.stack)
-    console.error("Detalhes do erro:", {
-      message: erro.message,
-      name: erro.name,
-      original: erro.original
-    })
     res.status(500).json({ 
       erro: "Erro ao buscar manutenções",
       detalhes: erro.message,
@@ -62,15 +63,24 @@ export const criarManutencao = async (req, res) => {
       })
     }
 
-    const novaManutencao = await Manutencao.create({
-      modelo: modelo.trim(),
-      placa: placa.trim(),
-      servico: servico.trim(),
-      valor: parseFloat(valor),
-      oficina: oficina.trim(),
-      hora: hora.trim(),
-      data: data // DATEONLY aceita string no formato YYYY-MM-DD
-    })
+    const query = `
+      INSERT INTO manutencoes (modelo, placa, servico, valor, oficina, hora, data)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *
+    `
+    
+    const values = [
+      modelo.trim(),
+      placa.trim(),
+      servico.trim(),
+      parseFloat(valor),
+      oficina.trim(),
+      hora.trim(),
+      data
+    ]
+
+    const result = await pool.query(query, values)
+    const novaManutencao = result.rows[0]
 
     // Retornar dados formatados
     const manutencaoJson = {
@@ -78,21 +88,16 @@ export const criarManutencao = async (req, res) => {
       modelo: novaManutencao.modelo,
       placa: novaManutencao.placa,
       servico: novaManutencao.servico,
-      valor: novaManutencao.valor,
+      valor: parseFloat(novaManutencao.valor),
       oficina: novaManutencao.oficina,
       hora: novaManutencao.hora,
-      data: novaManutencao.data ? novaManutencao.data.toString() : novaManutencao.data
+      data: novaManutencao.data ? (typeof novaManutencao.data === 'string' ? novaManutencao.data : novaManutencao.data.toISOString().split('T')[0]) : novaManutencao.data
     }
 
     res.status(201).json(manutencaoJson)
   } catch (erro) {
     console.error("Erro ao cadastrar manutenção:", erro)
     console.error("Stack trace:", erro.stack)
-    console.error("Detalhes do erro:", {
-      message: erro.message,
-      name: erro.name,
-      original: erro.original
-    })
     res.status(400).json({ 
       erro: "Erro ao cadastrar manutenção",
       detalhes: erro.message,
@@ -105,13 +110,42 @@ export const criarManutencao = async (req, res) => {
 export const buscarManutencaoPorId = async (req, res) => {
   try {
     const { id } = req.params
-    const manutencao = await Manutencao.findByPk(id)
     
-    if (!manutencao) {
+    const query = `
+      SELECT 
+        id,
+        modelo,
+        placa,
+        servico,
+        valor,
+        oficina,
+        hora,
+        data
+      FROM manutencoes
+      WHERE id = $1
+    `
+    
+    const result = await pool.query(query, [id])
+    
+    if (result.rows.length === 0) {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
     
-    res.json(manutencao)
+    const manutencao = result.rows[0]
+    
+    // Formatar dados
+    const manutencaoJson = {
+      id: manutencao.id,
+      modelo: manutencao.modelo,
+      placa: manutencao.placa,
+      servico: manutencao.servico,
+      valor: parseFloat(manutencao.valor),
+      oficina: manutencao.oficina,
+      hora: manutencao.hora,
+      data: manutencao.data ? (typeof manutencao.data === 'string' ? manutencao.data : manutencao.data.toISOString().split('T')[0]) : manutencao.data
+    }
+    
+    res.json(manutencaoJson)
   } catch (erro) {
     console.error("Erro ao buscar manutenção:", erro)
     res.status(500).json({ 
@@ -127,23 +161,83 @@ export const atualizarManutencao = async (req, res) => {
     const { id } = req.params
     const { modelo, placa, servico, valor, oficina, hora, data } = req.body
 
-    const manutencao = await Manutencao.findByPk(id)
+    // Verificar se a manutenção existe
+    const checkQuery = `SELECT id FROM manutencoes WHERE id = $1`
+    const checkResult = await pool.query(checkQuery, [id])
     
-    if (!manutencao) {
+    if (checkResult.rows.length === 0) {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
 
-    await manutencao.update({
-      ...(modelo && { modelo }),
-      ...(placa && { placa }),
-      ...(servico && { servico }),
-      ...(valor && { valor: parseFloat(valor) }),
-      ...(oficina && { oficina }),
-      ...(hora && { hora }),
-      ...(data && { data })
-    })
+    // Construir query de atualização dinamicamente
+    const updates = []
+    const values = []
+    let paramIndex = 1
 
-    res.json(manutencao)
+    if (modelo !== undefined) {
+      updates.push(`modelo = $${paramIndex}`)
+      values.push(modelo.trim())
+      paramIndex++
+    }
+    if (placa !== undefined) {
+      updates.push(`placa = $${paramIndex}`)
+      values.push(placa.trim())
+      paramIndex++
+    }
+    if (servico !== undefined) {
+      updates.push(`servico = $${paramIndex}`)
+      values.push(servico.trim())
+      paramIndex++
+    }
+    if (valor !== undefined) {
+      updates.push(`valor = $${paramIndex}`)
+      values.push(parseFloat(valor))
+      paramIndex++
+    }
+    if (oficina !== undefined) {
+      updates.push(`oficina = $${paramIndex}`)
+      values.push(oficina.trim())
+      paramIndex++
+    }
+    if (hora !== undefined) {
+      updates.push(`hora = $${paramIndex}`)
+      values.push(hora.trim())
+      paramIndex++
+    }
+    if (data !== undefined) {
+      updates.push(`data = $${paramIndex}`)
+      values.push(data)
+      paramIndex++
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ erro: "Nenhum campo para atualizar" })
+    }
+
+    values.push(id)
+    const updateQuery = `
+      UPDATE manutencoes
+      SET ${updates.join(', ')}
+      WHERE id = $${paramIndex}
+      RETURNING *
+    `
+
+    const result = await pool.query(updateQuery, values)
+    const manutencao = result.rows[0]
+
+    // Formatar dados
+    const manutencaoJson = {
+      id: manutencao.id,
+      modelo: manutencao.modelo,
+      placa: manutencao.placa,
+      servico: manutencao.servico,
+      valor: parseFloat(manutencao.valor),
+      oficina: manutencao.oficina,
+      hora: manutencao.hora,
+      data: manutencao.data ? (typeof manutencao.data === 'string' ? manutencao.data : manutencao.data.toISOString().split('T')[0]) : manutencao.data
+    }
+
+    res.json(manutencaoJson)
   } catch (erro) {
     console.error("Erro ao atualizar manutenção:", erro)
     res.status(400).json({ 
@@ -157,13 +251,18 @@ export const atualizarManutencao = async (req, res) => {
 export const deletarManutencao = async (req, res) => {
   try {
     const { id } = req.params
-    const manutencao = await Manutencao.findByPk(id)
     
-    if (!manutencao) {
+    // Verificar se a manutenção existe
+    const checkQuery = `SELECT id FROM manutencoes WHERE id = $1`
+    const checkResult = await pool.query(checkQuery, [id])
+    
+    if (checkResult.rows.length === 0) {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
 
-    await manutencao.destroy()
+    const deleteQuery = `DELETE FROM manutencoes WHERE id = $1`
+    await pool.query(deleteQuery, [id])
+    
     res.json({ mensagem: "Removida com sucesso!" })
   } catch (erro) {
     console.error("Erro ao remover manutenção:", erro)

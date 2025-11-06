@@ -23,6 +23,7 @@ model Usuario {
 enum TipoDeGasto {
   Combustivel
   Manutencao
+
 }
 
 model Carro {
@@ -63,6 +64,19 @@ model GastosManutencao {
   hora     String
   data     DateTime @default(now())
   criadoEm DateTime @default(now())
-
+  
   @@map("gastos_manutencao")
+}
+
+model Manutencao {
+  id      Int      @id @default(autoincrement())
+  modelo  String
+  placa   String
+  servico String
+  valor   Float
+  oficina String
+  hora    String
+  data    DateTime @db.Date
+
+  @@map("manutencoes")
 }
