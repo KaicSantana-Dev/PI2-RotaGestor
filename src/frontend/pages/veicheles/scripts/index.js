@@ -62,7 +62,6 @@ function normalizar(str) {
 }
 
 function converterImagemParaBase64(file) {
-  console.log("converterImagemParaBase64", file)
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(reader.result)
@@ -73,7 +72,6 @@ function converterImagemParaBase64(file) {
 
 function converterImagemBuffer(imagemBuffer) {
   // Se não há imagem ou é null/undefined, retorna placeholder
-  console.log("converterImagemBuffer", imagemBuffer)
   if (!imagemBuffer || imagemBuffer === null || imagemBuffer === undefined) {
     return "https://via.placeholder.com/400x250?text=Sem+Imagem"
   }
@@ -333,14 +331,21 @@ function renderizarCards(veiculosFiltrados = vehicles) {
             
             <div class="card-content">
                 <div class="info-section">
-                    <h3 class="driver-name">${veiculo.motorista}</h3>
+                    <h3 class="vehicle-model" style="font-size: 20px; font-weight: 700; color: #2D3748; margin: 0 0 8px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-car" style="color: #52b69a; font-size: 18px;"></i>
+                        ${veiculo.modelo}
+                    </h3>
+                    <h4 class="driver-name" style="font-size: 16px; font-weight: 600; color: #718096; margin: 0 0 12px 0;">
+                        <i class="fas fa-user" style="color: #52b69a; margin-right: 6px;"></i>
+                        ${veiculo.motorista}
+                    </h4>
                     
-                    <div class="cnh-info">
-                        <div class="cnh-icon">ID</div>
+                    <div class="cnh-info" style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; color: #4A5568;">
+                        <div class="cnh-icon" style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 12px;">ID</div>
                         <span>CNH: ${veiculo.cnh}</span>
                     </div>
                     
-                    <div class="status-container">
+                    <div class="status-container" style="margin-top: 12px;">
                         <div class="status-badge ${veiculo.ativo ? "active" : "maintenance"}">
                             <span class="status-dot"></span>
                             <span>${veiculo.ativo ? "Ativo" : "Inativo"}</span>
@@ -348,14 +353,14 @@ function renderizarCards(veiculosFiltrados = vehicles) {
                     </div>
                 </div>
 
-                <div class="monthly-cost">
-                    <div class="cost-item">
-                        <span class="cost-label">Gasto/m</span>
-                        <span class="cost-value">${formatarMoeda(veiculo.gastoMensal)}</span>
+                <div class="monthly-cost" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                    <div class="cost-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span class="cost-label" style="font-size: 12px; font-weight: 600; color: #718096; text-transform: uppercase;">Gasto/m</span>
+                        <span class="cost-value" style="font-size: 16px; font-weight: 700; color: #2D3748;">${formatarMoeda(veiculo.gastoMensal)}</span>
                     </div>
-                    <div class="cost-item">
-                        <span class="cost-label">Em atividade</span>
-                        <span class="time-value">${calcularTempoAtividade(veiculo.dataInicio)}</span>
+                    <div class="cost-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="cost-label" style="font-size: 12px; font-weight: 600; color: #718096; text-transform: uppercase;">Em atividade</span>
+                        <span class="time-value" style="font-size: 14px; font-weight: 600; color: #52b69a;">${calcularTempoAtividade(veiculo.dataInicio)}</span>
                     </div>
                 </div>
             </div>
@@ -858,9 +863,16 @@ async function cadastrarVeiculoConfirmar(formValues) {
                 <div style="text-align: center; padding: 20px 10px;">
                     <h3 style="color: #2D3748; font-weight: 700; font-size: 24px; margin-bottom: 12px;">Veículo Cadastrado!</h3>
                     <p style="color: #718096; font-size: 15px; margin-bottom: 20px;">
-                        <strong style="color: #52b69a;">${novoVeiculo.modelo}</strong> foi adicionado com sucesso ao sistema.
+                        O veículo foi adicionado com sucesso ao sistema.
                     </p>
-                    <div style="background: #f8fafb; padding: 20px; border-radius: 12px; display: inline-block; text-align: left;">
+                    <div style="background: #f8fafb; padding: 20px; border-radius: 12px; display: inline-block; text-align: left; min-width: 300px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
+                            <i class="fas fa-car" style="font-size: 24px; color: #52b69a;"></i>
+                            <div>
+                                <p style="color: #718096; font-size: 12px; font-weight: 700; text-transform: uppercase; margin: 0;">Modelo</p>
+                                <p style="color: #2D3748; font-size: 18px; font-weight: 700; margin: 4px 0 0 0;">${novoVeiculo.modelo}</p>
+                            </div>
+                        </div>
                         <p style="color: #2D3748; font-size: 14px; margin: 8px 0;">
                             <strong style="color: #718096;">Placa:</strong> ${novoVeiculo.placa}
                         </p>
@@ -1035,11 +1047,24 @@ async function visualizarVeiculo(id) {
                 <div class="vehicle-detail-modal">
                     <div class="detail-header">
                         <img src="${veiculo.imagem}" alt="${veiculo.modelo}" class="detail-image">
-                        <h2 class="detail-title">${veiculo.modelo}</h2>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <i class="fas fa-car" style="font-size: 32px; color: #52b69a;"></i>
+                            <h2 class="detail-title" style="margin: 0;">${veiculo.modelo}</h2>
+                        </div>
                         <div class="detail-plate">${veiculo.placa}</div>
                     </div>
                     
                     <div class="detail-grid">
+                        <div class="detail-item" style="grid-column: 1 / -1; background: linear-gradient(135deg, #52b69a15 0%, #3a8b7415 100%); border: 2px solid #52b69a30;">
+                            <div class="detail-label">
+                                <i class="fas fa-car" style="color: #52b69a;"></i>
+                                Modelo do Veículo
+                            </div>
+                            <div class="detail-value" style="font-size: 22px; color: #2D3748; font-weight: 700;">
+                                ${veiculo.modelo}
+                            </div>
+                        </div>
+                        
                         <div class="detail-item">
                             <div class="detail-label">
                                 <i class="fas fa-user"></i>
@@ -1125,14 +1150,24 @@ async function visualizarVeiculo(id) {
 // ============================================
 
 async function editarVeiculo(id) {
-  const veiculo = vehicles.find((v) => v.id === id)
-  if (!veiculo) return
+  try {
+    // Busca o veículo atualizado do backend para garantir dados atualizados
+    const veiculo = await buscarVeiculoPorId(id)
+    if (!veiculo) {
+      Swal.fire({
+        icon: "error",
+        title: "Erro",
+        text: "Veículo não encontrado",
+        confirmButtonColor: "#52b69a",
+      })
+      return
+    }
 
-  let imagemSelecionada = null
-  let imagemPreview = veiculo.imagem
-  let statusAtivo = veiculo.ativo
+    let imagemSelecionada = null
+    let imagemPreview = veiculo.imagem
+    let statusAtivo = veiculo.ativo
 
-  const { value: formValues } = await Swal.fire({
+    const { value: formValues } = await Swal.fire({
     html: `
             <style>
                 .vehicle-edit-modal {
@@ -1199,6 +1234,27 @@ async function editarVeiculo(id) {
                     outline: none;
                     border-color: #52b69a;
                     box-shadow: 0 0 0 3px rgba(82, 182, 154, 0.1);
+                }
+                
+                .form-input.error {
+                    border-color: #e53e3e;
+                }
+                
+                .error-message {
+                    color: #e53e3e;
+                    font-size: 12px;
+                    margin-top: 4px;
+                    display: none;
+                }
+                
+                .error-message.show {
+                    display: block;
+                }
+                
+                .char-counter {
+                    font-size: 11px;
+                    color: #a0aec0;
+                    margin-top: 4px;
                 }
                 
                 .image-upload-area {
@@ -1285,7 +1341,8 @@ async function editarVeiculo(id) {
                             <i class="fas fa-car"></i>
                             Modelo do Veículo
                         </label>
-                        <input type="text" id="modelo" class="form-input" value="${veiculo.modelo}">
+                        <input type="text" id="edit-vehicle-modelo-input" class="form-input" value="${veiculo.modelo}">
+                        <div id="edit-vehicle-modelo-error" class="error-message" style="display: none; color: #e53e3e; font-size: 12px; margin-top: 4px;">Mínimo 2 caracteres</div>
                     </div>
                     
                     <div class="form-group">
@@ -1293,7 +1350,9 @@ async function editarVeiculo(id) {
                             <i class="fas fa-id-card"></i>
                             Placa
                         </label>
-                        <input type="text" id="placa" class="form-input" value="${veiculo.placa}" maxlength="8">
+                        <input type="text" id="edit-vehicle-placa-input" class="form-input" value="${veiculo.placa}" maxlength="8">
+                        <div class="char-counter" id="edit-vehicle-placa-counter">${veiculo.placa.length}/8</div>
+                        <div id="edit-vehicle-placa-error" class="error-message" style="display: none; color: #e53e3e; font-size: 12px; margin-top: 4px;">Mínimo 7 caracteres</div>
                     </div>
                     
                     <div class="form-group">
@@ -1301,7 +1360,8 @@ async function editarVeiculo(id) {
                             <i class="fas fa-user"></i>
                             ID do Motorista
                         </label>
-                        <input type="number" id="motoristaId" class="form-input" value="${veiculo.motoristaId}">
+                        <input type="number" id="edit-vehicle-motorista-id-input" class="form-input" value="${veiculo.motoristaId}">
+                        <div id="edit-vehicle-motorista-id-error" class="error-message" style="display: none; color: #e53e3e; font-size: 12px; margin-top: 4px;">ID obrigatório</div>
                     </div>
                     
                     <div class="form-group full-width">
@@ -1309,10 +1369,10 @@ async function editarVeiculo(id) {
                             <i class="fas fa-image"></i>
                             Imagem do Veículo
                         </label>
-                        <div class="image-upload-area has-image" id="imageUploadArea">
+                        <div class="image-upload-area has-image" id="edit-vehicle-image-upload-area">
                             <img src="${imagemPreview}" class="image-preview" alt="Preview">
                         </div>
-                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                        <input type="file" id="edit-vehicle-image-input" accept="image/*" style="display: none;">
                     </div>
                     
                     <div class="form-group full-width">
@@ -1321,10 +1381,10 @@ async function editarVeiculo(id) {
                             Status do Veículo
                         </label>
                         <div class="status-toggle">
-                            <div class="toggle-switch ${statusAtivo ? "active" : ""}" id="statusToggle">
+                            <div class="toggle-switch ${statusAtivo ? "active" : ""}" id="edit-vehicle-status-toggle">
                                 <div class="toggle-slider"></div>
                             </div>
-                            <span class="toggle-label" id="statusLabel">${statusAtivo ? "Ativo" : "Inativo"}</span>
+                            <span class="toggle-label" id="edit-vehicle-status-label">${statusAtivo ? "Ativo" : "Inativo"}</span>
                         </div>
                     </div>
                 </div>
@@ -1338,68 +1398,182 @@ async function editarVeiculo(id) {
     cancelButtonColor: "#e2e8f0",
     didOpen: () => {
       // Toggle de status
-      const statusToggle = document.getElementById("statusToggle")
-      const statusLabel = document.getElementById("statusLabel")
+      const statusToggle = document.getElementById("edit-vehicle-status-toggle")
+      const statusLabel = document.getElementById("edit-vehicle-status-label")
 
-      statusToggle.addEventListener("click", () => {
-        statusAtivo = !statusAtivo
-        statusToggle.classList.toggle("active")
-        statusLabel.textContent = statusAtivo ? "Ativo" : "Inativo"
-      })
+      if (statusToggle && statusLabel) {
+        statusToggle.addEventListener("click", () => {
+          statusAtivo = !statusAtivo
+          statusToggle.classList.toggle("active")
+          statusLabel.textContent = statusAtivo ? "Ativo" : "Inativo"
+        })
+      }
 
       // Upload de imagem
-      const imageUploadArea = document.getElementById("imageUploadArea")
-      const imageInput = document.getElementById("imageInput")
+      const imageUploadArea = document.getElementById("edit-vehicle-image-upload-area")
+      const imageInput = document.getElementById("edit-vehicle-image-input")
 
-      imageUploadArea.addEventListener("click", () => imageInput.click())
+      if (imageUploadArea && imageInput) {
+        imageUploadArea.addEventListener("click", () => imageInput.click())
 
-      imageInput.addEventListener("change", async (e) => {
-        const file = e.target.files[0]
-        if (file) {
-          if (file.size > 5 * 1024 * 1024) {
-            Swal.showValidationMessage("Imagem muito grande! Máximo 5MB")
-            return
+        imageInput.addEventListener("change", async (e) => {
+          const file = e.target.files[0]
+          if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+              Swal.showValidationMessage("Imagem muito grande! Máximo 5MB")
+              return
+            }
+
+            try {
+              imagemSelecionada = await converterImagemParaBase64(file)
+              imagemPreview = URL.createObjectURL(file)
+
+              imageUploadArea.innerHTML = `<img src="${imagemPreview}" class="image-preview" alt="Preview">`
+            } catch (error) {
+              console.error("Erro ao processar imagem:", error)
+              Swal.showValidationMessage("Erro ao processar a imagem. Tente novamente.")
+            }
           }
+        })
+      }
 
-          imagemSelecionada = await converterImagemParaBase64(file)
-          imagemPreview = URL.createObjectURL(file)
+      // Validações em tempo real
+      const modeloInput = document.getElementById("edit-vehicle-modelo-input")
+      const placaInput = document.getElementById("edit-vehicle-placa-input")
+      const motoristaIdInput = document.getElementById("edit-vehicle-motorista-id-input")
 
-          imageUploadArea.innerHTML = `<img src="${imagemPreview}" class="image-preview" alt="Preview">`
-        }
-      })
+      // Validação de modelo
+      if (modeloInput) {
+        modeloInput.addEventListener("input", () => {
+          const valor = modeloInput.value.trim()
+          const errorElement = document.getElementById("edit-vehicle-modelo-error")
+          
+          if (valor.length > 0 && valor.length < 2) {
+            modeloInput.classList.add("error")
+            if (errorElement) {
+              errorElement.style.display = "block"
+            }
+          } else {
+            modeloInput.classList.remove("error")
+            if (errorElement) {
+              errorElement.style.display = "none"
+            }
+          }
+        })
+      }
+
+      // Validação de placa
+      if (placaInput) {
+        placaInput.addEventListener("input", (e) => {
+          const valor = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "")
+          e.target.value = valor
+          
+          const counterElement = document.getElementById("edit-vehicle-placa-counter")
+          const errorElement = document.getElementById("edit-vehicle-placa-error")
+          
+          if (counterElement) {
+            counterElement.textContent = `${valor.length}/8`
+          }
+          
+          if (valor.length > 0 && valor.length < 7) {
+            placaInput.classList.add("error")
+            if (errorElement) {
+              errorElement.style.display = "block"
+            }
+          } else {
+            placaInput.classList.remove("error")
+            if (errorElement) {
+              errorElement.style.display = "none"
+            }
+          }
+        })
+      }
+
+      // Validação de motorista ID
+      if (motoristaIdInput) {
+        motoristaIdInput.addEventListener("input", () => {
+          const valor = motoristaIdInput.value.trim()
+          const errorElement = document.getElementById("edit-vehicle-motorista-id-error")
+          
+          if (valor.length > 0 && (Number.parseInt(valor) <= 0 || isNaN(Number.parseInt(valor)))) {
+            motoristaIdInput.classList.add("error")
+            if (errorElement) {
+              errorElement.style.display = "block"
+            }
+          } else {
+            motoristaIdInput.classList.remove("error")
+            if (errorElement) {
+              errorElement.style.display = "none"
+            }
+          }
+        })
+      }
     },
     preConfirm: () => {
-      const modelo = document.getElementById("modelo").value.trim()
-      const placa = document.getElementById("placa").value.trim()
-      const motoristaId = document.getElementById("motoristaId").value.trim()
+      const modeloInput = document.getElementById("edit-vehicle-modelo-input")
+      const placaInput = document.getElementById("edit-vehicle-placa-input")
+      const motoristaIdInput = document.getElementById("edit-vehicle-motorista-id-input")
 
+      if (!modeloInput || !placaInput || !motoristaIdInput) {
+        Swal.showValidationMessage("Erro ao acessar os campos do formulário")
+        return false
+      }
+
+      const modelo = modeloInput.value.trim()
+      const placa = placaInput.value.trim().toUpperCase()
+      const motoristaId = motoristaIdInput.value.trim()
+
+      // Validação de modelo
       if (!modelo || modelo.length < 2) {
         Swal.showValidationMessage("Modelo deve ter no mínimo 2 caracteres")
+        modeloInput.classList.add("error")
+        modeloInput.focus()
         return false
       }
 
+      // Validação de placa
       if (!placa || placa.length < 7) {
         Swal.showValidationMessage("Placa deve ter no mínimo 7 caracteres")
+        placaInput.classList.add("error")
+        placaInput.focus()
         return false
       }
 
-      if (!motoristaId || Number.parseInt(motoristaId) <= 0) {
-        Swal.showValidationMessage("ID do motorista é obrigatório")
+      // Validação de motorista ID
+      const motoristaIdNum = Number.parseInt(motoristaId)
+      if (!motoristaId || isNaN(motoristaIdNum) || motoristaIdNum <= 0) {
+        Swal.showValidationMessage("ID do motorista é obrigatório e deve ser um número válido")
+        motoristaIdInput.classList.add("error")
+        motoristaIdInput.focus()
         return false
       }
+
+      // Remove classes de erro se tudo estiver válido
+      modeloInput.classList.remove("error")
+      placaInput.classList.remove("error")
+      motoristaIdInput.classList.remove("error")
 
       return {
         modelo,
-        placa: placa.toUpperCase(),
-        motoristaId: Number.parseInt(motoristaId),
+        placa,
+        motoristaId: motoristaIdNum,
         imagem: imagemSelecionada,
         ativo: statusAtivo,
       }
     },
   })
 
-  if (formValues) {
-    await editarVeiculoConfirmar(id, formValues)
+    if (formValues) {
+      await editarVeiculoConfirmar(id, formValues)
+    }
+  } catch (error) {
+    console.error("Erro ao abrir modal de edição:", error)
+    Swal.fire({
+      icon: "error",
+      title: "Erro",
+      text: "Não foi possível carregar os dados do veículo para edição.",
+      confirmButtonColor: "#52b69a",
+    })
   }
 }
 
@@ -1417,15 +1591,34 @@ async function editarVeiculoConfirmar(id, formValues) {
 
     // Prepara dados para enviar à API
     const dadosVeiculo = {
-      modelo: formValues.modelo,
-      placa: formValues.placa,
-      motoristaId: formValues.motoristaId,
+      modelo: String(formValues.modelo || "").trim(),
+      placa: String(formValues.placa || "").trim().toUpperCase(),
+      motoristaId: Number.parseInt(formValues.motoristaId),
       status: formValues.ativo ? "ativo" : "inativo",
     }
 
-    // Só envia imagem se foi alterada
-    if (formValues.imagem) {
-      dadosVeiculo.imagem = formValues.imagem
+    // Validação final antes de enviar
+    if (!dadosVeiculo.modelo || dadosVeiculo.modelo.length < 2) {
+      throw new Error("Modelo deve ter no mínimo 2 caracteres")
+    }
+
+    if (!dadosVeiculo.placa || dadosVeiculo.placa.length < 7) {
+      throw new Error("Placa deve ter no mínimo 7 caracteres")
+    }
+
+    if (!dadosVeiculo.motoristaId || dadosVeiculo.motoristaId <= 0) {
+      throw new Error("ID do motorista é obrigatório e deve ser um número válido")
+    }
+
+    // Só envia imagem se foi alterada (não é null e não é undefined)
+    // Se imagemSelecionada for null, não envia o campo, mantendo a imagem atual no backend
+    if (formValues.imagem !== null && formValues.imagem !== undefined && formValues.imagem !== "") {
+      // Remove o prefixo data:image se existir (o backend já trata isso, mas é bom garantir)
+      let imagemBase64 = formValues.imagem
+      if (typeof imagemBase64 === "string" && imagemBase64.includes(",")) {
+        imagemBase64 = imagemBase64.split(",").pop()
+      }
+      dadosVeiculo.imagem = imagemBase64
     }
 
     // Envia para API
@@ -1435,22 +1628,52 @@ async function editarVeiculoConfirmar(id, formValues) {
     const index = vehicles.findIndex((v) => v.id === id)
     if (index !== -1) {
       vehicles[index] = veiculoAtualizado
+    } else {
+      // Se não encontrou no array, adiciona (caso tenha sido filtrado)
+      vehicles.push(veiculoAtualizado)
     }
-    aplicarFiltros()
+    
+    // Recarrega os veículos para garantir sincronização
+    await carregarVeiculos()
 
     // Mostra sucesso
     await Swal.fire({
       icon: "success",
-      title: "Veículo Atualizado!",
-      text: `${veiculoAtualizado.modelo} foi atualizado com sucesso.`,
-      confirmButtonText: "OK",
+      html: `
+        <div style="text-align: center; padding: 20px 10px;">
+          <h3 style="color: #2D3748; font-weight: 700; font-size: 24px; margin-bottom: 12px;">Veículo Atualizado!</h3>
+          <p style="color: #718096; font-size: 15px; margin-bottom: 20px;">
+            O veículo foi atualizado com sucesso.
+          </p>
+          <div style="background: #f8fafb; padding: 20px; border-radius: 12px; display: inline-block; text-align: left; min-width: 300px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
+              <i class="fas fa-car" style="font-size: 24px; color: #52b69a;"></i>
+              <div>
+                <p style="color: #718096; font-size: 12px; font-weight: 700; text-transform: uppercase; margin: 0;">Modelo</p>
+                <p style="color: #2D3748; font-size: 18px; font-weight: 700; margin: 4px 0 0 0;">${veiculoAtualizado.modelo}</p>
+              </div>
+            </div>
+            <p style="color: #2D3748; font-size: 14px; margin: 8px 0;">
+              <strong style="color: #718096;">Placa:</strong> ${veiculoAtualizado.placa}
+            </p>
+            <p style="color: #2D3748; font-size: 14px; margin: 8px 0;">
+              <strong style="color: #718096;">Motorista:</strong> ${veiculoAtualizado.motorista}
+            </p>
+            <p style="color: #2D3748; font-size: 14px; margin: 8px 0;">
+              <strong style="color: #718096;">Status:</strong> ${veiculoAtualizado.ativo ? "Ativo" : "Inativo"}
+            </p>
+          </div>
+        </div>
+      `,
+      confirmButtonText: '<i class="fas fa-check"></i> Entendi',
       confirmButtonColor: "#52b69a",
     })
   } catch (error) {
+    console.error("Erro ao atualizar veículo:", error)
     Swal.fire({
       icon: "error",
       title: "Erro ao atualizar",
-      text: error.message,
+      text: error.message || "Não foi possível atualizar o veículo. Verifique os dados e tente novamente.",
       confirmButtonColor: "#52b69a",
     })
   }
