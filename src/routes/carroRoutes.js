@@ -1,31 +1,19 @@
 import express from "express"
 import {
-  criarGastoCombustivel,
-  listarGastosCombustivel,
-  buscarGastoCombustivelPorId,
-  atualizarGastoCombustivel,
-  deletarGastoCombustivel,
-  criarGastoManutencao,
-  listarGastosManutencao,
-  buscarGastoManutencaoPorId,
-  atualizarGastoManutencao,
-  deletarGastoManutencao,
-} from "../controllers/gastosController.js"
+  criarCarro,
+  listarCarros,
+  buscarCarroPorId,
+  atualizarCarro,
+  deletarCarro,
+} from "../controllers/carroController.js"
 
-const router = express.Router() 
+const router = express.Router()
 
-// Rotas de gastos de combustível
-router.post("/combustivel", criarGastoCombustivel)
-router.get("/combustivel", listarGastosCombustivel)
-router.get("/combustivel/:id", buscarGastoCombustivelPorId)
-router.put("/combustivel/:id", atualizarGastoCombustivel)
-router.delete("/combustivel/:id", deletarGastoCombustivel)
-
-// Rotas de gastos de manutenção
-router.post("/manutencao", criarGastoManutencao)
-router.get("/manutencao", listarGastosManutencao)
-router.get("/manutencao/:id", buscarGastoManutencaoPorId)
-router.put("/manutencao/:id", atualizarGastoManutencao)
-router.delete("/manutencao/:id", deletarGastoManutencao)
+// Rotas de carros
+router.post("/", criarCarro)
+router.get("/", listarCarros)
+router.get("/:id", buscarCarroPorId)
+router.put("/:id", atualizarCarro)
+router.delete("/:id", deletarCarro)
 
 export default router
