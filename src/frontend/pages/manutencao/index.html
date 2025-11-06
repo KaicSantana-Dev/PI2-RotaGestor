@@ -42,30 +42,34 @@
       <div class="filtro-container">
         <div class="filtro-item">
           <label>Modelo</label>
-          <input type="text" placeholder="Sandero">
+          <input type="text" id="filtroModelo" placeholder="Sandero">
         </div>
 
         <div class="filtro-item">
           <label>Placa</label>
-          <input type="text" placeholder="AB4C-4D5H">
+          <input type="text" id="filtroPlaca" placeholder="AB4C-4D5H">
         </div>
 
         <div class="filtro-item">
-          <label>Serviços</label>
-          <select>
-            <option>Manutenção Geral</option>
-            <option>Manutenção Elétrica</option>
-          </select>
+          <label>Serviço</label>
+          <input type="text" id="filtroServico" placeholder="Ex: Troca de óleo">
         </div>
 
         <div class="filtro-item">
           <label>Local</label>
-          <input type="text" placeholder="Ex: Mecânica do Tião">
+          <input type="text" id="filtroLocal" placeholder="Ex: Mecânica do Tião">
         </div>
 
         <div class="filtro-item">
           <label>Data</label>
-          <input type="date">
+          <input type="date" id="filtroData">
+        </div>
+
+        <div class="filtro-item">
+          <button class="btn" id="btnLimparFiltros" onclick="limparFiltros()" title="Limpar filtros">
+            <i class="fa-solid fa-eraser"></i>
+            Limpar
+          </button>
         </div>
 
         <div class="filtro-item">
@@ -180,11 +184,129 @@
   <script>
     const apiUrl = "/api/manutencoes";
 
-    async function carregarTabela() {
-      try {
-        const tabela = document.getElementById("tabela");
-        tabela.innerHTML = "<div class='linha'><div class='coluna' style='grid-column: 1 / -1; text-align: center;'>Carregando...</div></div>";
+    // Variável global para armazenar todas as manutenções
+    window.todasManutencoes = [];
+
+    // Função para formatar data
+    function formatarData(dataString) {
+      if (!dataString) return 'N/A';
+      const data = new Date(dataString + 'T00:00:00');
+      return data.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    // Função para filtrar manutenções (global)
+    window.filtrarManutencoes = function() {
+      const filtroModelo = document.getElementById('filtroModelo').value.toLowerCase().trim();
+      const filtroPlaca = document.getElementById('filtroPlaca').value.toLowerCase().trim();
+      const filtroServico = document.getElementById('filtroServico').value.toLowerCase().trim();
+      const filtroLocal = document.getElementById('filtroLocal').value.toLowerCase().trim();
+      const filtroData = document.getElementById('filtroData').value;
+
+      let manutencoesFiltradas = window.todasManutencoes.filter(manutencao => {
+        // Filtro por modelo
+        if (filtroModelo && !manutencao.modelo?.toLowerCase().includes(filtroModelo)) {
+          return false;
+        }
+
+        // Filtro por placa
+        if (filtroPlaca && !manutencao.placa?.toLowerCase().includes(filtroPlaca)) {
+          return false;
+        }
+
+        // Filtro por serviço
+        if (filtroServico && !manutencao.servico?.toLowerCase().includes(filtroServico)) {
+          return false;
+        }
+
+        // Filtro por local/oficina
+        if (filtroLocal && !manutencao.oficina?.toLowerCase().includes(filtroLocal)) {
+          return false;
+        }
+
+        // Filtro por data
+        if (filtroData) {
+          const dataManutencao = manutencao.data ? new Date(manutencao.data + 'T00:00:00') : null;
+          const dataFiltro = new Date(filtroData);
+          
+          if (!dataManutencao) return false;
+          
+          // Comparar apenas a data (ignorar hora)
+          const dataManutencaoFormatada = new Date(dataManutencao.getFullYear(), dataManutencao.getMonth(), dataManutencao.getDate());
+          const dataFiltroFormatada = new Date(dataFiltro.getFullYear(), dataFiltro.getMonth(), dataFiltro.getDate());
+          
+          if (dataManutencaoFormatada.getTime() !== dataFiltroFormatada.getTime()) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      exibirManutencoes(manutencoesFiltradas);
+    };
+
+    // Função para exibir manutenções na tabela
+    function exibirManutencoes(manutencoes) {
+      const tabela = document.getElementById('tabela');
+
+      // Limpar tabela antes de adicionar novos dados
+      tabela.innerHTML = '';
+
+      // Verificar se há manutenções
+      if (!manutencoes || manutencoes.length === 0) {
+        tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhuma manutenção encontrada</div></div>';
+        return;
+      }
+
+      // Iterar sobre as manutenções
+      manutencoes.forEach(item => {
+        const linha = document.createElement('div');
+        linha.classList.add('linha');
+
+        // Formatar valor para exibição
+        const valorFormatado = typeof item.valor === 'number' 
+          ? item.valor.toFixed(2).replace('.', ',') 
+          : item.valor || '0,00';
         
+        // Formatar data
+        const dataFormatada = formatarData(item.data);
+
+        linha.innerHTML = `
+          <div class="coluna">${item.modelo || 'N/A'}</div>
+          <div class="coluna">${item.placa || 'N/A'}</div>
+          <div class="coluna">${item.servico || 'N/A'}</div>
+          <div class="coluna">R$ ${valorFormatado}</div>
+          <div class="coluna">${item.oficina || 'N/A'}</div>
+          <div class="coluna">${item.hora || 'N/A'}</div>
+          <div class="coluna">${dataFormatada}</div>
+          <div class="coluna acoes-coluna">
+            <button class="btn-acao btn-excluir" onclick="removerManutencao(${item.id})" title="Excluir">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+
+        tabela.appendChild(linha);
+      });
+    }
+
+    // Função para limpar filtros (global)
+    window.limparFiltros = function() {
+      document.getElementById('filtroModelo').value = '';
+      document.getElementById('filtroPlaca').value = '';
+      document.getElementById('filtroServico').value = '';
+      document.getElementById('filtroLocal').value = '';
+      document.getElementById('filtroData').value = '';
+      window.filtrarManutencoes();
+    };
+
+    // Função para carregar dados da API
+    async function carregarDados() {
+      try {
         const res = await fetch(apiUrl);
         
         if (!res.ok) {
@@ -193,46 +315,15 @@
         
         const dados = await res.json();
 
-        if (!dados || dados.length === 0) {
-          tabela.innerHTML = "<div class='linha'><div class='coluna' style='grid-column: 1 / -1; text-align: center;'>Nenhuma manutenção cadastrada</div></div>";
-          return;
-        }
-
-        tabela.innerHTML = "";
-        dados.forEach(item => {
-          const linha = document.createElement("div");
-          linha.classList.add("linha");
-          
-          // Formatar valor para exibição
-          const valorFormatado = typeof item.valor === 'number' 
-            ? item.valor.toFixed(2).replace('.', ',') 
-            : item.valor;
-          
-          // Formatar data
-          const dataFormatada = item.data 
-            ? new Date(item.data + 'T00:00:00').toLocaleDateString('pt-BR')
-            : 'N/A';
-          
-          linha.innerHTML = `
-            <div class="coluna">${item.modelo || 'N/A'}</div>
-            <div class="coluna">${item.placa || 'N/A'}</div>
-            <div class="coluna">${item.servico || 'N/A'}</div>
-            <div class="coluna">R$ ${valorFormatado}</div>
-            <div class="coluna">${item.oficina || 'N/A'}</div>
-            <div class="coluna">${item.hora || 'N/A'}</div>
-            <div class="coluna">${dataFormatada}</div>
-            <div class="coluna acoes-coluna">
-              <button class="btn-acao btn-excluir" onclick="removerManutencao(${item.id})" title="Excluir">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </div>
-          `;
-          tabela.appendChild(linha);
-        });
+        // Armazenar todas as manutenções
+        window.todasManutencoes = dados || [];
+        
+        // Exibir todas as manutenções inicialmente
+        window.filtrarManutencoes();
       } catch (erro) {
-        console.error("Erro ao carregar tabela:", erro);
-        const tabela = document.getElementById("tabela");
-        tabela.innerHTML = `<div class='linha'><div class='coluna' style='grid-column: 1 / -1; text-align: center; color: red;'>Erro ao carregar dados: ${erro.message}</div></div>`;
+        console.error("Erro ao carregar dados:", erro);
+        const tabela = document.getElementById('tabela');
+        tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center; color: red;">Erro ao carregar dados. Verifique a conexão com o servidor.</div></div>';
       }
     }
 
@@ -295,7 +386,7 @@
         if (res.ok) {
           alert("Manutenção cadastrada com sucesso!");
           fecharModal();
-          carregarTabela();
+          carregarDados();
         } else {
           alert(`Erro ao cadastrar manutenção: ${resultado.erro || resultado.detalhes || 'Erro desconhecido'}`);
         }
@@ -314,7 +405,7 @@
         
         if (res.ok) {
           alert("Removida com sucesso!");
-          carregarTabela();
+          carregarDados();
         } else {
           alert(`Erro ao remover: ${resultado.erro || resultado.detalhes || 'Erro desconhecido'}`);
         }
@@ -324,8 +415,37 @@
       }
     }
 
-    // Carregar tabela ao carregar a página
-    carregarTabela();
+    // Adicionar event listeners aos campos de filtro
+    document.addEventListener('DOMContentLoaded', function() {
+      const filtroModelo = document.getElementById('filtroModelo');
+      const filtroPlaca = document.getElementById('filtroPlaca');
+      const filtroServico = document.getElementById('filtroServico');
+      const filtroLocal = document.getElementById('filtroLocal');
+      const filtroData = document.getElementById('filtroData');
+
+      if (filtroModelo) {
+        filtroModelo.addEventListener('input', window.filtrarManutencoes);
+      }
+
+      if (filtroPlaca) {
+        filtroPlaca.addEventListener('input', window.filtrarManutencoes);
+      }
+
+      if (filtroServico) {
+        filtroServico.addEventListener('input', window.filtrarManutencoes);
+      }
+
+      if (filtroLocal) {
+        filtroLocal.addEventListener('input', window.filtrarManutencoes);
+      }
+
+      if (filtroData) {
+        filtroData.addEventListener('change', window.filtrarManutencoes);
+      }
+    });
+
+    // Carregar dados ao carregar a página
+    carregarDados();
   </script>
 </body>
 
