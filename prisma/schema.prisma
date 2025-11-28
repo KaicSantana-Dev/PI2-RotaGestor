@@ -36,6 +36,7 @@ model Carro {
   motorista         Usuario             @relation(fields: [motoristaId], references: [id], onDelete: Cascade)
   gastosCombustivel GastosCombustivel[]
   gastosManutencao  GastosManutencao[]
+  manutencoes       Manutencao[]
   criadoEm          DateTime            @default(now())
   atualizadoEm      DateTime            @updatedAt
 
@@ -43,13 +44,15 @@ model Carro {
 }
 
 model GastosCombustivel {
-  id       Int      @id @default(autoincrement())
-  carroId  Int
-  carro    Carro    @relation(fields: [carroId], references: [id], onDelete: Cascade)
-  valor    Decimal  @db.Decimal(10, 2)
-  posto    String
-  data     DateTime @default(now())
-  criadoEm DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  carroId       Int
+  carro         Carro    @relation(fields: [carroId], references: [id], onDelete: Cascade)
+  valor         Decimal  @db.Decimal(10, 2)
+  posto         String
+  quilometragem Decimal? @db.Decimal(10, 2)
+  litros        Decimal? @db.Decimal(10, 2)
+  data          DateTime @default(now())
+  criadoEm      DateTime @default(now())
 
   @@map("gastos_combustivel")
 }
@@ -69,14 +72,15 @@ model GastosManutencao {
 }
 
 model Manutencao {
-  id      Int      @id @default(autoincrement())
-  modelo  String
-  placa   String
-  servico String
-  valor   Float
-  oficina String
-  hora    String
-  data    DateTime @db.Date
+  id        Int      @id @default(autoincrement())
+  carroId   Int
+  carro     Carro    @relation(fields: [carroId], references: [id], onDelete: Cascade)
+  servico   String
+  valor     Decimal  @db.Decimal(10, 2)
+  oficina  String
+  hora      String
+  data      DateTime @db.Date
+  criadoEm  DateTime @default(now())
 
   @@map("manutencoes")
 }

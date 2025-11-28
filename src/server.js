@@ -5,6 +5,7 @@ import usuarioRoutes from "./routes/usuarioRoutes.js"
 import carroRoutes from "./routes/carroRoutes.js"
 import gastosRoutes from "./routes/gastosRoutes.js"
 import manutencaoRoutes from "./routes/manutencaoRoutes.js"
+import dashboardRoutes from "./routes/dashboardRoutes.js"
 
 // Carregar variáveis de ambiente
 dotenv.config()
@@ -67,6 +68,7 @@ app.use("/api/usuarios", usuarioRoutes)
 app.use("/api/carros", carroRoutes)
 app.use("/api/gastos", gastosRoutes)
 app.use("/api/manutencoes", manutencaoRoutes)
+app.use("/api/dashboard", dashboardRoutes)
 
 // Tratamento de rotas não encontradas
 app.use((req, res) => {

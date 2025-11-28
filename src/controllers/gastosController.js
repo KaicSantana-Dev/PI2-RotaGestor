@@ -5,7 +5,7 @@ import prisma from "../prisma/client.js"
 // Criar gasto de combustível
 export const criarGastoCombustivel = async (req, res) => {
   try {
-    const { carroId, valor, posto, data } = req.body
+    const { carroId, valor, posto, quilometragem, litros, data } = req.body
 
     // Validação básica
     if (!carroId || !valor || !posto) {
@@ -30,6 +30,8 @@ export const criarGastoCombustivel = async (req, res) => {
         carroId: Number.parseInt(carroId),
         valor: Number.parseFloat(valor),
         posto,
+        ...(quilometragem && { quilometragem: Number.parseFloat(quilometragem) }),
+        ...(litros && { litros: Number.parseFloat(litros) }),
         ...(data && { data: new Date(data) }),
       },
       include: {
@@ -121,7 +123,7 @@ export const buscarGastoCombustivelPorId = async (req, res) => {
 export const atualizarGastoCombustivel = async (req, res) => {
   try {
     const { id } = req.params
-    const { valor, posto, data } = req.body
+    const { valor, posto, quilometragem, litros, data } = req.body
 
     // Verificar se gasto existe
     const gastoExistente = await prisma.gastosCombustivel.findUnique({
@@ -139,6 +141,8 @@ export const atualizarGastoCombustivel = async (req, res) => {
       data: {
         ...(valor && { valor: Number.parseFloat(valor) }),
         ...(posto && { posto }),
+        ...(quilometragem !== undefined && { quilometragem: Number.parseFloat(quilometragem) }),
+        ...(litros !== undefined && { litros: Number.parseFloat(litros) }),
         ...(data && { data: new Date(data) }),
       },
       include: {
@@ -196,7 +200,7 @@ export const deletarGastoCombustivel = async (req, res) => {
 // Criar gasto de manutenção
 export const criarGastoManutencao = async (req, res) => {
   try {
-    const { carroId, valor, local, data } = req.body
+    const { carroId, servico, valor, local, hora, data } = req.body
 
     // Validação básica
     if (!carroId || !valor || !local) {
@@ -219,8 +223,10 @@ export const criarGastoManutencao = async (req, res) => {
     const gasto = await prisma.gastosManutencao.create({
       data: {
         carroId: Number.parseInt(carroId),
+        servico: servico || "Manutenção",
         valor: Number.parseFloat(valor),
         local,
+        ...(hora && { hora }),
         ...(data && { data: new Date(data) }),
       },
       include: {
@@ -312,7 +318,7 @@ export const buscarGastoManutencaoPorId = async (req, res) => {
 export const atualizarGastoManutencao = async (req, res) => {
   try {
     const { id } = req.params
-    const { valor, local, data } = req.body
+    const { servico, valor, local, hora, data } = req.body
 
     // Verificar se gasto existe
     const gastoExistente = await prisma.gastosManutencao.findUnique({
@@ -328,8 +334,10 @@ export const atualizarGastoManutencao = async (req, res) => {
     const gasto = await prisma.gastosManutencao.update({
       where: { id: Number.parseInt(id) },
       data: {
+        ...(servico && { servico }),
         ...(valor && { valor: Number.parseFloat(valor) }),
         ...(local && { local }),
+        ...(hora && { hora }),
         ...(data && { data: new Date(data) }),
       },
       include: {

@@ -4,6 +4,15 @@ import prisma from "../prisma/client.js"
 export const listarManutencoes = async (req, res) => {
   try {
     const manutencoes = await prisma.manutencao.findMany({
+      include: {
+        carro: {
+          select: {
+            id: true,
+            modelo: true,
+            placa: true,
+          },
+        },
+      },
       orderBy: {
         data: 'desc'
       }
@@ -17,8 +26,9 @@ export const listarManutencoes = async (req, res) => {
     // Converter dados para formato seguro
     const manutencoesJson = manutencoes.map(manutencao => ({
       id: manutencao.id,
-      modelo: manutencao.modelo || '',
-      placa: manutencao.placa || '',
+      carroId: manutencao.carroId,
+      modelo: manutencao.carro?.modelo || '',
+      placa: manutencao.carro?.placa || '',
       servico: manutencao.servico || '',
       valor: parseFloat(manutencao.valor) || 0,
       oficina: manutencao.oficina || '',
@@ -41,35 +51,55 @@ export const listarManutencoes = async (req, res) => {
 // Criar nova manutenção
 export const criarManutencao = async (req, res) => {
   try {
-    const { modelo, placa, servico, valor, oficina, hora, data } = req.body
+    const { carroId, servico, valor, oficina, hora, data } = req.body
 
-    console.log("Dados recebidos:", { modelo, placa, servico, valor, oficina, hora, data })
+    console.log("Dados recebidos:", { carroId, servico, valor, oficina, hora, data })
 
     // Validação básica
-    if (!modelo || !placa || !servico || !valor || !oficina || !hora || !data) {
+    if (!carroId || !servico || !valor || !oficina || !hora || !data) {
       return res.status(400).json({
-        erro: "Todos os campos são obrigatórios",
-        camposRecebidos: { modelo, placa, servico, valor, oficina, hora, data }
+        erro: "carroId, servico, valor, oficina, hora e data são obrigatórios",
+        camposRecebidos: { carroId, servico, valor, oficina, hora, data }
+      })
+    }
+
+    // Verificar se carro existe
+    const carro = await prisma.carro.findUnique({
+      where: { id: Number.parseInt(carroId) },
+    })
+
+    if (!carro) {
+      return res.status(404).json({
+        erro: "Carro não encontrado",
       })
     }
 
     const novaManutencao = await prisma.manutencao.create({
       data: {
-        modelo: modelo.trim(),
-        placa: placa.trim(),
+        carroId: Number.parseInt(carroId),
         servico: servico.trim(),
         valor: parseFloat(valor),
         oficina: oficina.trim(),
         hora: hora.trim(),
         data: new Date(data)
-      }
+      },
+      include: {
+        carro: {
+          select: {
+            id: true,
+            modelo: true,
+            placa: true,
+          },
+        },
+      },
     })
 
     // Retornar dados formatados
     const manutencaoJson = {
       id: novaManutencao.id,
-      modelo: novaManutencao.modelo,
-      placa: novaManutencao.placa,
+      carroId: novaManutencao.carroId,
+      modelo: novaManutencao.carro.modelo,
+      placa: novaManutencao.carro.placa,
       servico: novaManutencao.servico,
       valor: parseFloat(novaManutencao.valor),
       oficina: novaManutencao.oficina,
@@ -97,7 +127,16 @@ export const buscarManutencaoPorId = async (req, res) => {
     const manutencao = await prisma.manutencao.findUnique({
       where: {
         id: parseInt(id)
-      }
+      },
+      include: {
+        carro: {
+          select: {
+            id: true,
+            modelo: true,
+            placa: true,
+          },
+        },
+      },
     })
     
     if (!manutencao) {
@@ -107,8 +146,9 @@ export const buscarManutencaoPorId = async (req, res) => {
     // Formatar dados
     const manutencaoJson = {
       id: manutencao.id,
-      modelo: manutencao.modelo,
-      placa: manutencao.placa,
+      carroId: manutencao.carroId,
+      modelo: manutencao.carro?.modelo || '',
+      placa: manutencao.carro?.placa || '',
       servico: manutencao.servico,
       valor: parseFloat(manutencao.valor),
       oficina: manutencao.oficina,
@@ -130,7 +170,7 @@ export const buscarManutencaoPorId = async (req, res) => {
 export const atualizarManutencao = async (req, res) => {
   try {
     const { id } = req.params
-    const { modelo, placa, servico, valor, oficina, hora, data } = req.body
+    const { carroId, servico, valor, oficina, hora, data } = req.body
 
     // Verificar se a manutenção existe
     const manutencaoExistente = await prisma.manutencao.findUnique({
@@ -143,14 +183,24 @@ export const atualizarManutencao = async (req, res) => {
       return res.status(404).json({ erro: "Manutenção não encontrada" })
     }
 
+    // Se está mudando o carro, verificar se existe
+    if (carroId) {
+      const carro = await prisma.carro.findUnique({
+        where: { id: Number.parseInt(carroId) },
+      })
+
+      if (!carro) {
+        return res.status(404).json({
+          erro: "Carro não encontrado",
+        })
+      }
+    }
+
     // Construir objeto de atualização dinamicamente
     const updateData = {}
 
-    if (modelo !== undefined) {
-      updateData.modelo = modelo.trim()
-    }
-    if (placa !== undefined) {
-      updateData.placa = placa.trim()
+    if (carroId !== undefined) {
+      updateData.carroId = Number.parseInt(carroId)
     }
     if (servico !== undefined) {
       updateData.servico = servico.trim()
@@ -176,14 +226,24 @@ export const atualizarManutencao = async (req, res) => {
       where: {
         id: parseInt(id)
       },
-      data: updateData
+      data: updateData,
+      include: {
+        carro: {
+          select: {
+            id: true,
+            modelo: true,
+            placa: true,
+          },
+        },
+      },
     })
 
     // Formatar dados
     const manutencaoJson = {
       id: manutencao.id,
-      modelo: manutencao.modelo,
-      placa: manutencao.placa,
+      carroId: manutencao.carroId,
+      modelo: manutencao.carro?.modelo || '',
+      placa: manutencao.carro?.placa || '',
       servico: manutencao.servico,
       valor: parseFloat(manutencao.valor),
       oficina: manutencao.oficina,

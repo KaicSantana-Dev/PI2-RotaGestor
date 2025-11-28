@@ -112,19 +112,13 @@
       
       <form id="formCadastro" class="modal-form">
         <div class="form-group">
-          <label for="modelo">
+          <label for="carroId">
             <i class="fa-solid fa-car"></i>
-            Modelo *
+            Veículo *
           </label>
-          <input type="text" id="modelo" name="modelo" placeholder="Ex: Sandero" required>
-        </div>
-
-        <div class="form-group">
-          <label for="placa">
-            <i class="fa-solid fa-id-card"></i>
-            Placa *
-          </label>
-          <input type="text" id="placa" name="placa" placeholder="Ex: ABC-1234" required>
+          <select id="carroId" name="carroId" required>
+            <option value="">Selecione um veículo</option>
+          </select>
         </div>
 
         <div class="form-group">
@@ -183,9 +177,11 @@
 
   <script>
     const apiUrl = "/api/manutencoes";
+    const apiCarrosUrl = "/api/carros";
 
     // Variável global para armazenar todas as manutenções
     window.todasManutencoes = [];
+    window.todosCarros = [];
 
     // Função para formatar data
     function formatarData(dataString) {
@@ -346,12 +342,37 @@
       }
     });
 
+    // Função para carregar carros
+    async function carregarCarros() {
+      try {
+        const res = await fetch(apiCarrosUrl);
+        
+        if (!res.ok) {
+          throw new Error(`Erro ${res.status}: ${res.statusText}`);
+        }
+        
+        const dados = await res.json();
+        window.todosCarros = dados.carros || [];
+        
+        // Preencher select de carros no modal
+        const selectCarro = document.getElementById('carroId');
+        selectCarro.innerHTML = '<option value="">Selecione um veículo</option>';
+        window.todosCarros.forEach(carro => {
+          const option = document.createElement('option');
+          option.value = carro.id;
+          option.textContent = `${carro.modelo} - ${carro.placa}`;
+          selectCarro.appendChild(option);
+        });
+      } catch (erro) {
+        console.error("Erro ao carregar carros:", erro);
+      }
+    }
+
     // Submissão do formulário
     document.getElementById('formCadastro').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const modelo = document.getElementById("modelo").value.trim();
-      const placa = document.getElementById("placa").value.trim();
+      const carroId = document.getElementById("carroId").value;
       const servico = document.getElementById("servico").value.trim();
       const valor = document.getElementById("valor").value;
       const oficina = document.getElementById("oficina").value.trim();
@@ -359,14 +380,13 @@
       const data = document.getElementById("data").value;
 
       // Validação
-      if (!modelo || !placa || !servico || !valor || !oficina || !hora || !data) {
+      if (!carroId || !servico || !valor || !oficina || !hora || !data) {
         alert("Por favor, preencha todos os campos!");
         return;
       }
 
       const nova = {
-        modelo,
-        placa,
+        carroId: parseInt(carroId),
         servico,
         valor: parseFloat(valor),
         oficina,
@@ -445,6 +465,7 @@
     });
 
     // Carregar dados ao carregar a página
+    carregarCarros();
     carregarDados();
   </script>
 </body>

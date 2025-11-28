@@ -168,6 +168,7 @@ function converterImagemBuffer(imagemBuffer) {
 }
 
 function transformarVeiculoAPI(carroAPI) {
+  const gastos = calcularGastoTotal(carroAPI)
   return {
     id: carroAPI.id,
     modelo: carroAPI.modelo,
@@ -179,22 +180,30 @@ function transformarVeiculoAPI(carroAPI) {
     status: carroAPI.status,
     ativo: carroAPI.status === "ativo",
     dataInicio: carroAPI.criadoEm,
-    gastoMensal: calcularGastoMensal(carroAPI),
+    gastos: gastos,
   }
 }
 
-function calcularGastoMensal(carroAPI) {
+function calcularGastoTotal(carroAPI) {
   let total = 0
+  let totalCombustivel = 0
+  let totalManutencao = 0
 
   if (carroAPI.gastosCombustivel && carroAPI.gastosCombustivel.length > 0) {
-    total += carroAPI.gastosCombustivel.reduce((acc, gasto) => acc + Number.parseFloat(gasto.valor || 0), 0)
+    totalCombustivel = carroAPI.gastosCombustivel.reduce((acc, gasto) => acc + Number.parseFloat(gasto.valor || 0), 0)
+    total += totalCombustivel
   }
 
   if (carroAPI.gastosManutencao && carroAPI.gastosManutencao.length > 0) {
-    total += carroAPI.gastosManutencao.reduce((acc, gasto) => acc + Number.parseFloat(gasto.valor || 0), 0)
+    totalManutencao = carroAPI.gastosManutencao.reduce((acc, gasto) => acc + Number.parseFloat(gasto.valor || 0), 0)
+    total += totalManutencao
   }
 
-  return total
+  return {
+    total,
+    combustivel: totalCombustivel,
+    manutencao: totalManutencao
+  }
 }
 
 // ============================================
@@ -345,14 +354,35 @@ function renderizarCards(veiculosFiltrados = vehicles) {
                         <span>CNH: ${veiculo.cnh}</span>
                     </div>
                     
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
-                        <div class="status-badge ${veiculo.ativo ? "active" : "maintenance"}">
-                            <span class="status-dot"></span>
-                            <span>${veiculo.ativo ? "Ativo" : "Inativo"}</span>
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div class="status-badge ${veiculo.ativo ? "active" : "maintenance"}">
+                                <span class="status-dot"></span>
+                                <span>${veiculo.ativo ? "Ativo" : "Inativo"}</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="display: block; font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; margin-bottom: 4px;">Em atividade</span>
+                                <span style="font-size: 14px; font-weight: 600; color: #52b69a;">${calcularTempoAtividade(veiculo.dataInicio)}</span>
+                            </div>
                         </div>
-                        <div style="text-align: right;">
-                            <span style="display: block; font-size: 11px; font-weight: 600; color: #718096; text-transform: uppercase; margin-bottom: 4px;">Em atividade</span>
-                            <span style="font-size: 14px; font-weight: 600; color: #52b69a;">${calcularTempoAtividade(veiculo.dataInicio)}</span>
+                        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); padding: 12px; border-radius: 10px; border: 1px solid #d1fae5;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span style="display: block; font-size: 10px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                                        <i class="fas fa-dollar-sign" style="color: #52b69a; margin-right: 4px;"></i>
+                                        Total de Gastos
+                                    </span>
+                                    <span style="font-size: 18px; font-weight: 700; color: #2D3748;">${formatarMoeda(veiculo.gastos.total)}</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 10px; color: #6b7280; margin-bottom: 2px;">
+                                        <i class="fas fa-gas-pump" style="margin-right: 4px;"></i>Combustível: ${formatarMoeda(veiculo.gastos.combustivel)}
+                                    </div>
+                                    <div style="font-size: 10px; color: #6b7280;">
+                                        <i class="fas fa-wrench" style="margin-right: 4px;"></i>Manutenção: ${formatarMoeda(veiculo.gastos.manutencao)}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1090,6 +1120,42 @@ async function visualizarVeiculo(id) {
                             </div>
                             <div class="status-badge-detail ${veiculo.ativo ? "active" : "maintenance"}">
                                 <span>${veiculo.ativo ? "✓ Ativo" : "⚠ Inativo"}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item" style="grid-column: 1 / -1; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #d1fae5;">
+                            <div class="detail-label" style="margin-bottom: 16px;">
+                                <i class="fas fa-dollar-sign" style="color: #52b69a;"></i>
+                                Gastos Totais
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                                <div style="text-align: center; padding: 12px; background: white; border-radius: 10px; border: 1px solid #d1fae5;">
+                                    <div style="font-size: 11px; font-weight: 700; color: #718096; text-transform: uppercase; margin-bottom: 8px;">
+                                        <i class="fas fa-dollar-sign" style="color: #52b69a; margin-right: 4px;"></i>
+                                        Total
+                                    </div>
+                                    <div style="font-size: 20px; font-weight: 700; color: #2D3748;">
+                                        ${formatarMoeda(veiculo.gastos.total)}
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 12px; background: white; border-radius: 10px; border: 1px solid #d1fae5;">
+                                    <div style="font-size: 11px; font-weight: 700; color: #718096; text-transform: uppercase; margin-bottom: 8px;">
+                                        <i class="fas fa-gas-pump" style="color: #52b69a; margin-right: 4px;"></i>
+                                        Combustível
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #2D3748;">
+                                        ${formatarMoeda(veiculo.gastos.combustivel)}
+                                    </div>
+                                </div>
+                                <div style="text-align: center; padding: 12px; background: white; border-radius: 10px; border: 1px solid #d1fae5;">
+                                    <div style="font-size: 11px; font-weight: 700; color: #718096; text-transform: uppercase; margin-bottom: 8px;">
+                                        <i class="fas fa-wrench" style="color: #52b69a; margin-right: 4px;"></i>
+                                        Manutenção
+                                    </div>
+                                    <div style="font-size: 18px; font-weight: 700; color: #2D3748;">
+                                        ${formatarMoeda(veiculo.gastos.manutencao)}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

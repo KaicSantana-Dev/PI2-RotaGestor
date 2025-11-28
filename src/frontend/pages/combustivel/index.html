@@ -3,21 +3,21 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1920">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RotaGestor - Abastecimentos</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
   <link rel="icon" href="../../../../public/assets/logo/Icon.svg">
 </head>
 
-<body class="wrapper">
-  <nav class="nav">
+<body>
+  <nav>
     <div class="logo">
       <img src="assets/Logo.svg">
     </div>
     <div class="navbar">
       <a href="/"><i class="icon fa-solid fa-house"></i>Início</a>
-      <a href="/combustivel"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
+      <a href="#"><i class="icon fa-solid fa-gas-pump"></i>Combustivel</a>
       <a href="/manutencao"><i class="icon fa-solid fa-wrench"></i>Manutenção</a>
       <a href="/veiculos"><i class="icon fa-solid fa-car"></i> Veículos</a>
       <a href="/pessoas"><i class="icon fa-solid fa-user"></i>Pessoas</a>
@@ -27,102 +27,434 @@
   <main>
     <header>
       <h1>Abastecimentos</h1>
-      <div class="header-buttons">
-        <div class="account-header">
-          <div>
-            <i class="fa-solid fa-user"></i>
-              <span onclick="window.location.href='../../../../index.html'" >Sair</span>      
-          </div>
-          <i class="fa-solid fa-gear"></i>
-          <i class="fa-solid fa-bell"></i>
-        </div>
 
+      <div class="account-header">
+        <div>
+          <i class="fa-solid fa-user"></i>
+          <span onclick="window.location.href='../../../../index.html'">Sair</span>
+        </div>
+        <i class="fa-solid fa-gear"></i>
+        <i class="fa-solid fa-bell"></i>
       </div>
     </header>
+
     <section>
       <div class="filtro-container">
         <div class="filtro-item">
-          <label>Produto</label>
-          <select>
-            <option>Gasolina Comum</option>
-            <option>Diesel S10</option>
-          </select>
-
-        </div>
-
-        <div class="filtro-item">
           <label>Placa</label>
-          <input type="text" placeholder="AB4C-4D5H">
+          <input type="text" id="filtroPlaca" placeholder="AB4C-4D5H">
         </div>
 
-        
         <div class="filtro-item">
-          <label>Local</label>
-          <input type="text" placeholder="Ex: Posto do Tião">
+          <label>Posto</label>
+          <input type="text" id="filtroPosto" placeholder="Ex: Posto do Tião">
         </div>
-        
+
         <div class="filtro-item">
           <label>Data</label>
-          <input type="date">
+          <input type="date" id="filtroData">
         </div>
-        
+
         <div class="filtro-item">
-          <label>Ordenar</label>
-          <select>
-            <option>Data de Criação</option>
-            <option>Valor</option>
-          </select>
+          <button class="btn" id="btnLimparFiltros" onclick="limparFiltros()" title="Limpar filtros">
+            <i class="fa-solid fa-eraser"></i>
+            Limpar
+          </button>
         </div>
+
         <div class="filtro-item">
-          <label>Valor</label>
-          <button class="btn-sort">⇅</button>
-        </div>
-        <div class="filtro-item">
-        <button class="btn">
-          <img src="assets/document-icon.svg" alt="Documento" class="">
-          Cadastrar
-        </button>
+          <button class="btn" id="btnCadastrar" onclick="abrirModal()">
+            <img src="assets/document-icon.svg" alt="Documento" class="">
+            Cadastrar
+          </button>
         </div>
       </div>
-      
-      
     </section>
+
     <section>
       <div class="tabela-container">
-        <div class="tabela-scroll" id="tabela">
-
+        <div class="tabela-scroll">
+          <div class="linha" style="background-color: #52b69a; color: white; font-weight: 600; margin-bottom: 15px;">
+            <div class="coluna">Placa</div>
+            <div class="coluna">Modelo</div>
+            <div class="coluna">Posto</div>
+            <div class="coluna">Valor</div>
+            <div class="coluna">Litros</div>
+            <div class="coluna">Quilometragem</div>
+            <div class="coluna">Data</div>
+            <div class="coluna">Ações</div>
+          </div>
+          <div id="tabela"></div>
         </div>
-    </section>
-    <section>
-      <script>
-        fetch('combustivel.json')
-          .then(res => res.json())
-          .then(dados => {
-            const tabela = document.getElementById('tabela');
-
-            dados.forEach(item => {
-              const linha = document.createElement('div');
-              linha.classList.add('linha');
-
-              linha.innerHTML = `
-          <div class="coluna">${item.produto}</div>
-          <div class="coluna">${item.placa}</div>
-          <div class="coluna">${item.litros}</div>
-          <div class="coluna">${item.valor}</div>
-          <div class="coluna">${item.oficina}</div>
-          <div class="coluna">${item.hora}</div>
-          <div class="coluna">${item.data}</div>
-        `;
-
-              tabela.appendChild(linha);
-            });
-          })
-          .catch(erro => console.error("Erro ao carregar o JSON:", erro));
-      </script>
-
-
+      </div>
     </section>
   </main>
+
+  <!-- Modal de Cadastro -->
+  <div id="modalCadastro" class="modal-overlay hidden">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>Cadastrar Abastecimento</h2>
+        <button class="modal-close" onclick="fecharModal()">
+          <i class="fa-solid fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="formCadastro" class="modal-form">
+        <div class="form-group">
+          <label for="carroId">
+            <i class="fa-solid fa-car"></i>
+            Veículo *
+          </label>
+          <select id="carroId" name="carroId" required>
+            <option value="">Selecione um veículo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="posto">
+            <i class="fa-solid fa-building"></i>
+            Posto *
+          </label>
+          <input type="text" id="posto" name="posto" placeholder="Ex: Posto do Tião" required>
+        </div>
+
+        <div class="form-group">
+          <label for="valor">
+            <i class="fa-solid fa-dollar-sign"></i>
+            Valor (R$) *
+          </label>
+          <input type="number" id="valor" name="valor" placeholder="Ex: 250.00" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label for="litros">
+            <i class="fa-solid fa-gas-pump"></i>
+            Litros
+          </label>
+          <input type="number" id="litros" name="litros" placeholder="Ex: 50.5" step="0.01">
+        </div>
+
+        <div class="form-group">
+          <label for="quilometragem">
+            <i class="fa-solid fa-tachometer-alt"></i>
+            Quilometragem
+          </label>
+          <input type="number" id="quilometragem" name="quilometragem" placeholder="Ex: 50000" step="0.01">
+        </div>
+
+        <div class="form-group">
+          <label for="data">
+            <i class="fa-solid fa-calendar"></i>
+            Data *
+          </label>
+          <input type="date" id="data" name="data" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancelar" onclick="fecharModal()">
+            <i class="fa-solid fa-times"></i>
+            Cancelar
+          </button>
+          <button type="submit" class="btn-salvar">
+            <i class="fa-solid fa-check"></i>
+            Cadastrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const apiUrl = "/api/gastos/combustivel";
+    const apiCarrosUrl = "/api/carros";
+
+    // Variável global para armazenar todos os gastos
+    window.todosGastos = [];
+    window.todosCarros = [];
+
+    // Função para formatar data
+    function formatarData(dataString) {
+      if (!dataString) return 'N/A';
+      const data = new Date(dataString);
+      return data.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    // Função para formatar moeda
+    function formatarMoeda(valor) {
+      if (!valor) return 'R$ 0,00';
+      return parseFloat(valor).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    }
+
+    // Função para filtrar gastos (global)
+    window.filtrarGastos = function() {
+      const filtroPlaca = document.getElementById('filtroPlaca').value.toLowerCase().trim();
+      const filtroPosto = document.getElementById('filtroPosto').value.toLowerCase().trim();
+      const filtroData = document.getElementById('filtroData').value;
+
+      let gastosFiltrados = window.todosGastos.filter(gasto => {
+        const carro = window.todosCarros.find(c => c.id === gasto.carroId);
+        
+        // Filtro por placa
+        if (filtroPlaca && carro && !carro.placa?.toLowerCase().includes(filtroPlaca)) {
+          return false;
+        }
+
+        // Filtro por posto
+        if (filtroPosto && !gasto.posto?.toLowerCase().includes(filtroPosto)) {
+          return false;
+        }
+
+        // Filtro por data
+        if (filtroData) {
+          const dataGasto = gasto.data ? new Date(gasto.data) : null;
+          const dataFiltro = new Date(filtroData);
+          
+          if (!dataGasto) return false;
+          
+          // Comparar apenas a data (ignorar hora)
+          const dataGastoFormatada = new Date(dataGasto.getFullYear(), dataGasto.getMonth(), dataGasto.getDate());
+          const dataFiltroFormatada = new Date(dataFiltro.getFullYear(), dataFiltro.getMonth(), dataFiltro.getDate());
+          
+          if (dataGastoFormatada.getTime() !== dataFiltroFormatada.getTime()) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      exibirGastos(gastosFiltrados);
+    };
+
+    // Função para exibir gastos na tabela
+    function exibirGastos(gastos) {
+      const tabela = document.getElementById('tabela');
+
+      // Limpar tabela antes de adicionar novos dados
+      tabela.innerHTML = '';
+
+      // Verificar se há gastos
+      if (!gastos || gastos.length === 0) {
+        tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center;">Nenhum abastecimento encontrado</div></div>';
+        return;
+      }
+
+      // Iterar sobre os gastos
+      gastos.forEach(gasto => {
+        const linha = document.createElement('div');
+        linha.classList.add('linha');
+
+        const carro = window.todosCarros.find(c => c.id === gasto.carroId);
+        const placa = carro?.placa || 'N/A';
+        const modelo = carro?.modelo || 'N/A';
+        
+        // Formatar valor para exibição
+        const valorFormatado = formatarMoeda(gasto.valor);
+        const litrosFormatado = gasto.litros ? `${parseFloat(gasto.litros).toFixed(2)} L` : 'N/A';
+        const kmFormatado = gasto.quilometragem ? `${parseFloat(gasto.quilometragem).toLocaleString('pt-BR')} km` : 'N/A';
+        
+        // Formatar data
+        const dataFormatada = formatarData(gasto.data);
+
+        linha.innerHTML = `
+          <div class="coluna">${placa}</div>
+          <div class="coluna">${modelo}</div>
+          <div class="coluna">${gasto.posto || 'N/A'}</div>
+          <div class="coluna">${valorFormatado}</div>
+          <div class="coluna">${litrosFormatado}</div>
+          <div class="coluna">${kmFormatado}</div>
+          <div class="coluna">${dataFormatada}</div>
+          <div class="coluna acoes-coluna">
+            <button class="btn-acao btn-excluir" onclick="removerGasto(${gasto.id})" title="Excluir">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+
+        tabela.appendChild(linha);
+      });
+    }
+
+    // Função para limpar filtros (global)
+    window.limparFiltros = function() {
+      document.getElementById('filtroPlaca').value = '';
+      document.getElementById('filtroPosto').value = '';
+      document.getElementById('filtroData').value = '';
+      window.filtrarGastos();
+    };
+
+    // Função para carregar carros
+    async function carregarCarros() {
+      try {
+        const res = await fetch(apiCarrosUrl);
+        
+        if (!res.ok) {
+          throw new Error(`Erro ${res.status}: ${res.statusText}`);
+        }
+        
+        const dados = await res.json();
+        window.todosCarros = dados.carros || [];
+        
+        // Preencher select de carros no modal
+        const selectCarro = document.getElementById('carroId');
+        selectCarro.innerHTML = '<option value="">Selecione um veículo</option>';
+        window.todosCarros.forEach(carro => {
+          const option = document.createElement('option');
+          option.value = carro.id;
+          option.textContent = `${carro.modelo} - ${carro.placa}`;
+          selectCarro.appendChild(option);
+        });
+      } catch (erro) {
+        console.error("Erro ao carregar carros:", erro);
+      }
+    }
+
+    // Função para carregar dados da API
+    async function carregarDados() {
+      try {
+        const res = await fetch(apiUrl);
+        
+        if (!res.ok) {
+          throw new Error(`Erro ${res.status}: ${res.statusText}`);
+        }
+        
+        const dados = await res.json();
+
+        // Armazenar todos os gastos
+        window.todosGastos = dados.gastos || [];
+        
+        // Exibir todos os gastos inicialmente
+        window.filtrarGastos();
+      } catch (erro) {
+        console.error("Erro ao carregar dados:", erro);
+        const tabela = document.getElementById('tabela');
+        tabela.innerHTML = '<div class="linha"><div class="coluna" style="grid-column: 1 / -1; text-align: center; color: red;">Erro ao carregar dados. Verifique a conexão com o servidor.</div></div>';
+      }
+    }
+
+    // Funções do Modal
+    function abrirModal() {
+      document.getElementById('modalCadastro').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModal() {
+      document.getElementById('modalCadastro').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      document.getElementById('formCadastro').reset();
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modalCadastro').addEventListener('click', function(e) {
+      if (e.target === this) {
+        fecharModal();
+      }
+    });
+
+    // Submissão do formulário
+    document.getElementById('formCadastro').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const carroId = document.getElementById("carroId").value;
+      const posto = document.getElementById("posto").value.trim();
+      const valor = document.getElementById("valor").value;
+      const litros = document.getElementById("litros").value;
+      const quilometragem = document.getElementById("quilometragem").value;
+      const data = document.getElementById("data").value;
+
+      // Validação
+      if (!carroId || !posto || !valor || !data) {
+        alert("Por favor, preencha todos os campos obrigatórios!");
+        return;
+      }
+
+      const novoGasto = {
+        carroId: parseInt(carroId),
+        posto,
+        valor: parseFloat(valor),
+        data
+      };
+
+      if (litros) {
+        novoGasto.litros = parseFloat(litros);
+      }
+
+      if (quilometragem) {
+        novoGasto.quilometragem = parseFloat(quilometragem);
+      }
+
+      try {
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(novoGasto)
+        });
+
+        const resultado = await res.json();
+
+        if (res.ok) {
+          alert("Abastecimento cadastrado com sucesso!");
+          fecharModal();
+          carregarDados();
+        } else {
+          alert(`Erro ao cadastrar abastecimento: ${resultado.erro || resultado.detalhes || 'Erro desconhecido'}`);
+        }
+      } catch (erro) {
+        console.error("Erro ao salvar abastecimento:", erro);
+        alert(`Erro ao cadastrar abastecimento: ${erro.message}`);
+      }
+    });
+
+    async function removerGasto(id) {
+      if (!confirm("Deseja remover este abastecimento?")) return;
+      
+      try {
+        const res = await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+        const resultado = await res.json();
+        
+        if (res.ok) {
+          alert("Removido com sucesso!");
+          carregarDados();
+        } else {
+          alert(`Erro ao remover: ${resultado.erro || resultado.detalhes || 'Erro desconhecido'}`);
+        }
+      } catch (erro) {
+        console.error("Erro ao remover abastecimento:", erro);
+        alert(`Erro ao remover: ${erro.message}`);
+      }
+    }
+
+    // Adicionar event listeners aos campos de filtro
+    document.addEventListener('DOMContentLoaded', function() {
+      const filtroPlaca = document.getElementById('filtroPlaca');
+      const filtroPosto = document.getElementById('filtroPosto');
+      const filtroData = document.getElementById('filtroData');
+
+      if (filtroPlaca) {
+        filtroPlaca.addEventListener('input', window.filtrarGastos);
+      }
+
+      if (filtroPosto) {
+        filtroPosto.addEventListener('input', window.filtrarGastos);
+      }
+
+      if (filtroData) {
+        filtroData.addEventListener('change', window.filtrarGastos);
+      }
+
+      // Carregar carros e dados
+      carregarCarros();
+      carregarDados();
+    });
+  </script>
 </body>
 
 </html>
