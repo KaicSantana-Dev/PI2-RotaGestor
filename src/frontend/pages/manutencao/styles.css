@@ -116,7 +116,7 @@ header h1:hover {
   border: none;
   background-color: var(--primary-color);
   padding: 10px 20px;
-  height: clamp(35px, 3vw, 50px);
+  height: clamp(35px, 3vw, 35px);
   font-size: 12px;
   border-radius: 15px;
   font-weight: 700;
@@ -185,6 +185,7 @@ header h1:hover {
 
 .filtro-item {
   display: flex;
+  height: fit-content;
   flex-direction: column;
   gap: 0.4rem;
 }
